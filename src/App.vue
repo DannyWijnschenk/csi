@@ -1,14 +1,10 @@
 <template>
-<!--<sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>-->
-<sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
+  <!--<sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>-->
+  <sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
   <main class="main" :class="{'collapsed' : collapsed}" :key="$route.path">
   <router-view/>
   </main>
-  </template>
+</template>
 
 
 
@@ -48,6 +44,44 @@ export default {
       )
       return menu
     }
+  },
+  methods: {
+
+  },
+  mounted() {
+    console.log("app is mounted");
+    var path = location.pathname;
+    console.log('pathname', path);
+    console.log('location',location)
+    var pathArray = path.split('/');
+    var namespace = 'csi' //default namespace when app is started in development mode
+    for (var i=0;i<pathArray.length;i++) {
+      if (pathArray[i].substring(0,6)=='uzgent') {  //development local server Ivan
+        namespace = pathArray[i].substring(0,6);
+        break;
+      }
+      if (pathArray[i].substring(0,5)=='winfo') {  //development local server Danny
+        namespace = pathArray[i].substring(0,5);
+        break;
+      }
+    }
+
+    var protocol = 'http';
+    var port = '';
+    var domain = document.domain;
+    var uri = '';
+    if ((namespace == 'uzgent') || (namespace == 'winfo') || (namespace == 'csi')) {  //connect to localhost for local development server
+      protocol = 'http';
+      port = 57772;
+      domain = 'localhost';
+      uri = '/csp/demo/'
+    }
+    ///var url = location.protocol+"//"+document.domain+":"+port+"/api/clinicom/"+namespace
+    var url = protocol + '://' + domain + ":" + port + uri + "restapi/csi/"
+    console.log("environment",process.env.NODE_ENV)
+    this.$store.dispatch('setServer',url);
+    this.$store.dispatch('setSystem',namespace);
+    console.log("server is set to ",url," system is ",namespace)
   }
 }
 </script>
