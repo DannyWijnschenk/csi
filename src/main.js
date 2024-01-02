@@ -84,12 +84,13 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons'
 import { faGaugeHigh } from '@fortawesome/free-solid-svg-icons'
 import { faPlay } from '@fortawesome/free-solid-svg-icons'
 import { faStop } from '@fortawesome/free-solid-svg-icons'
+import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
 library.add(faUserSecret, faBicycle, faPenToSquare, faPlus, faRotate, faUser, faUsers, faUsersRectangle, faUserGroup, faSort, faSortUp, faSortDown, faUpDown, faAngleLeft, faAngleRight, faThumbsUp,
     faHospital, faUserNurse, faHouseMedical, faHouseMedicalFlag, faBed, faDatabase, faCalculator, faVenusMars, faEarthEurope, faPeopleArrows, faServer, faUpload, faToolbox,
     faSliders, faList, faExclamation, faBatteryHalf, faComments, faSitemap, faHospitalUser, faUserCheck, faUserTag, faCircleExclamation, faCircleQuestion, faTrashCan, faFileInvoiceDollar, faClock,
-    faFish, faHandDots, faArrowsToCircle, faUpRightFromSquare, faCheckDouble, faFaceDizzy, faBoltLightning, faLungsVirus, faDna, faSkull, faLink, faCircle, faGaugeHigh, faPlay, faStop)
+    faFish, faHandDots, faArrowsToCircle, faUpRightFromSquare, faCheckDouble, faFaceDizzy, faBoltLightning, faLungsVirus, faDna, faSkull, faLink, faCircle, faGaugeHigh, faPlay, faStop, faWrench)
 
 const store = createStore({
     state() {

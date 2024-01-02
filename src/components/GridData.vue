@@ -117,9 +117,9 @@
           this.resultKey = ''
         }
         if (selection===undefined) {
-          url = this.$store.getters.serverUrl+"/v1/grid/"+this.table+ "?selection="
+          url = this.$store.getters.serverUrl+"/grid/"+this.table+ "?selection="
         } else {
-          url = this.$store.getters.serverUrl + "/v1/grid/" + this.table + "?selection=" + selection
+          url = this.$store.getters.serverUrl + "/grid/" + this.table + "?selection=" + selection
           if (selection != this.selection) {
             //new selection : we need a new query !
             this.resultKey = '';  //todo : purge the old results, or we need a param to invalidate the results and run the query again

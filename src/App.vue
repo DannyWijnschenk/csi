@@ -27,22 +27,32 @@ export default {
       var menu = [];
       menu.push(
         {
-          header: 'CSI',
+          header: 'CSI 0.1.1',
         })
       menu.push(
         {
-          title: 'Ziekenhuis',
-          icon: faIcon({ icon: 'fa-solid fa-hospital' }),
+          title: 'Settings',
+          icon: faIcon({ icon: 'fa-solid fa-toolbox' }),
           child: [
             {
-              title: 'Zorgverleners',
-              icon: faIcon({ icon: 'fa-solid fa-user-nurse' }),
-              href: '/caregivers/maintenance'
+              title: 'Parameters',
+              icon: faIcon({ icon: 'fa-solid fa-wrench' }),
+              href: '/parameter'
+            },
+            {
+              title: 'Menu',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/menu'
             }
           ]
         }
       )
       return menu
+    }
+  },
+  data() {
+    return {
+      collapsed: true
     }
   },
   methods: {
@@ -77,7 +87,7 @@ export default {
       uri = '/csp/demo/'
     }
     ///var url = location.protocol+"//"+document.domain+":"+port+"/api/clinicom/"+namespace
-    var url = protocol + '://' + domain + ":" + port + uri + "restapi/csi/"
+    var url = protocol + '://' + domain + ":" + port + uri + "restapi/csi"
     console.log("environment",process.env.NODE_ENV)
     this.$store.dispatch('setServer',url);
     this.$store.dispatch('setSystem',namespace);
@@ -86,11 +96,18 @@ export default {
 }
 </script>
 <style>
-  #app {
+.main {
+    padding-top: 0px;
+    padding-left: 350px;
+}
+.main.collapsed {
+    padding-left: 70px;
+}
+
+#app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
 }
 
@@ -105,5 +122,9 @@ nav a {
 
 nav a.router-link-exact-active {
   color: #42b983;
+}
+
+.v-sidebar-menu {
+  width: 350px;
 }
 </style>
