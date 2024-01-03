@@ -3,18 +3,8 @@
       <login-dialog ref="login" title="Login Server" :ott="getOtt()" v-on:loggedin="loggedin"></login-dialog>
     </div>
     <div class="home" v-if='this.$store.getters.isLoggedIn'>
-     <!-- <img alt="Vue logo" src="../assets/logo.png">
-      Welkom, {{getUser()}}
-      -->
-  
     </div>
-  <!--
-    <button type="button" class="btn" @click="showModal"> Open Modal! </button>
-    <modal-lookup title="TheTitle" v-if="isModalVisible" v-on:closemodallookup="closemodal">
-  
-    </modal-lookup>
-  -->
-  </template>
+</template>
   
   <script>
   // @ is an alias to /src

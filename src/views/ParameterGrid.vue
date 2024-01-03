@@ -50,11 +50,15 @@
       gridclickrow(button, id) {
         if (button=='edit') {
           this.editParameter(id)
+        } else if (button == 'add') {
+          this.addParameter()
         }
       },
       editParameter(id) {
-        console.log("edit", id);    
         this.$router.push('/parameter/'+id);
+      },
+      addParameter() {
+        this.$router.push('/parameter/new');
       },
       getParameters(refresh = false) {
         this.$refs.grid.getData(JSON.stringify(this.filter),null,refresh);
