@@ -4,6 +4,12 @@ import LoginForm from '../views/LoginFrm.vue'
 import MenuGrid from '../views/MenuGrid.vue'
 import ParameterGrid from '../views/ParameterGrid.vue'
 import ParameterForm from '../views/ParameterFrm.vue'
+import MetaFieldGrid from '../views/MetaFieldGrid.vue'
+import MetaFieldForm from '../views/MetaFieldsFrm.vue'
+import DataFieldGrid from '../views/DataFieldGrid.vue'
+import DataFieldForm from '../views/DataFieldFrm.vue'
+import HelpGrid from '../views/HelpGrid.vue'
+import HelpForm from '../views/HelpFrm.vue'
 
 const routes = [
   { path: '/',  name: 'home',  component: HomeView },
@@ -11,7 +17,14 @@ const routes = [
   { path: '/login', name: 'FrmLogin', component: LoginForm },
   { path: '/menu',  name: 'MenuGrid', component: MenuGrid },
   { path: '/parameter',  name: 'ParameterGrid', component: ParameterGrid },
-  { path: '/parameter/:id',  name: 'ParameterFrm', component: ParameterForm }
+  { path: '/parameter/:id',  name: 'ParameterFrm', component: ParameterForm },
+  { path: '/metafield',  name: 'MetaFieldGrid', component: MetaFieldGrid },
+  { path: '/metafield/:id',  name: 'MetaFieldForm', component: MetaFieldForm },
+  { path: '/datafield',  name: 'DataFieldGrid', component: DataFieldGrid },
+  { path: '/datafield/:id',  name: 'DataFieldForm', component: DataFieldForm },
+  { path: '/help',  name: 'HelpGrid', component: HelpGrid },
+  { path: '/help/:id',  name: 'HelpForm', component: HelpForm },
+
 ]
 
 const router = createRouter({
