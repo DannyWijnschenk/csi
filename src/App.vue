@@ -4,6 +4,7 @@
   <main class="main" :class="{'collapsed' : collapsed}" :key="$route.path">
   <router-view/>
   </main>
+  <DialogsWrapper />
 </template>
 
 
@@ -43,7 +44,22 @@ export default {
               title: 'Menu',
               icon: faIcon({ icon: 'fa-solid fa-list' }),
               href: '/menu'
-            }
+            },
+            {
+              title: 'Meta Field',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/metafield'
+            },
+            {
+              title: 'Data Field',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/datafield'
+            },
+            {
+              title: 'Help',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/help'
+            },
           ]
         }
       )
@@ -84,7 +100,7 @@ export default {
       protocol = 'http';
       port = 57772;
       domain = 'localhost';
-      uri = '/csp/demo/'
+      uri = '/csp/csi/'
     }
     ///var url = location.protocol+"//"+document.domain+":"+port+"/api/clinicom/"+namespace
     var url = protocol + '://' + domain + ":" + port + uri + "restapi/csi"

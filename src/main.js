@@ -8,6 +8,10 @@ import router from './router';
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 
+/// simple dialogs (e.g. to confirm a delete)
+/// https://github.com/harmyderoman/vuejs-confirm-dialog & https://codesandbox.io/s/vibrant-stonebraker-ml8tms?file=/src/App.vue
+import * as ConfirmDialog from 'vuejs-confirm-dialog';
+
 ///import bootstrap from 'bootstrap'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.js";
@@ -214,5 +218,6 @@ app.use(router);
 app.use(store);
 app.use(Toaster);
 app.use(VueSidebarMenu);
+app.use(ConfirmDialog);
 app.mount('#app');
 
