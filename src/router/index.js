@@ -10,6 +10,10 @@ import DataFieldGrid from '../views/DataFieldGrid.vue'
 import DataFieldForm from '../views/DataFieldFrm.vue'
 import HelpGrid from '../views/HelpGrid.vue'
 import HelpForm from '../views/HelpFrm.vue'
+import UserSettingGrid from '../views/UserSettingsGrid.vue'
+import UserSettingForm from '../views/UserSettingsFrm.vue'
+import RoleGrid from '../views/RoleGrid.vue'
+import RoleForm from '../views/RoleFrm.vue'
 
 const routes = [
   { path: '/',  name: 'home',  component: HomeView },
@@ -24,6 +28,11 @@ const routes = [
   { path: '/datafield/:id',  name: 'DataFieldForm', component: DataFieldForm },
   { path: '/help',  name: 'HelpGrid', component: HelpGrid },
   { path: '/help/:id',  name: 'HelpForm', component: HelpForm },
+  { path: '/usersetting',  name: 'UserSettingGrid', component: UserSettingGrid},
+  { path: '/usersetting/:id',  name: 'UserSetiingForm', component: UserSettingForm},
+  { path: '/role',  name: 'RoleGrid', component: RoleGrid},
+  { path: '/role/:id',  name: 'RoleForm', component: RoleForm},
+
 
 ]
 

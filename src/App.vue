@@ -60,6 +60,16 @@ export default {
               icon: faIcon({ icon: 'fa-solid fa-list' }),
               href: '/help'
             },
+            {
+              title: 'User Setting',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/usersetting'
+            },
+            {
+              title: 'Roles',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/role'
+            },
           ]
         }
       )

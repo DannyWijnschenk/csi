@@ -15,7 +15,7 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <grid-data ref="grid" titleHeading="UserSetting" table="UserSetting" v-on:gridClickRow="gridclickrow"></grid-data>
+            <grid-data ref="grid" titleHeading="Role" table="Role" v-on:gridClickRow="gridclickrow"></grid-data>
           </div>
         </div>
       </div>
@@ -32,7 +32,7 @@
     },
     data() {
       return {
-        title : 'UserSetting',
+        title : 'Roles',
         error : '',
         status : '',
         filter: {  },
@@ -55,10 +55,10 @@
         }
       },
       editParameter(id) {
-        this.$router.push('/usersetting/'+id);
+        this.$router.push('/role/'+id);
       },
       addParameter() {
-        this.$router.push('/usersetting/new');
+        this.$router.push('/role/new');
       },
       getParameters(refresh = false) {
         this.$refs.grid.getData(JSON.stringify(this.filter),null,refresh);
