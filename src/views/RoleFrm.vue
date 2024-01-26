@@ -31,22 +31,129 @@
               <div class="col-sm-6"><input type="text" class="form-control" v-model="form.description"/></div>
             </div>
           </div>
+          <div class="row mb-1">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-2"><div class="form-control border-0">Add</div></div>
+            <div class="col-sm-2"><div class="form-control border-0">Edit</div></div>
+            <div class="col-sm-2"><div class="form-control border-0">Prepare/Xecute</div></div>
+          </div>
+
           <div class="row mb-2">
-            <div class="col-sm-3">{{ gridLabel }}</div>
-            <div class="col-sm-6 d-flex align-items-center">
-                <div v-for="(checkbox, index) in checkboxes" :key="index">
-                <div v-if="!checkbox.hideCheckbox" class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" v-model="checkbox.value" :id="checkbox.id" />
-                </div>
-                </div>
+            <div class="col-sm-3 text-right">&emsp;Project</div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+              <input class="form-check-input" type="checkbox" id="checkbox1" v-model="form.addProject">
             </div>
             </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.editProject">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-3 text-right">&emsp;Set</div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+              <input class="form-check-input" type="checkbox" id="checkbox1" v-model="form.addSet">
+            </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.editSet">
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox3" v-model="form.prepareSet">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-3 text-right">&emsp;Select Concepts</div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.selectConcepts">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-3 text-right">&emsp;Calculate Patients</div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.calculatePatients">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-3 text-right">&emsp;Identify Patients</div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.identifyPatients">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-3 text-right">&emsp;Export CSV</div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.exportCSV">
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-2">
+            <div class="col-sm-3 text-right">&emsp;Export Domain</div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+                &emsp;
+            </div>
+            <div class="col-sm-2">
+              <div class="form-check form-check-inline d-flex align-items-center">
+                &emsp;
+                <input class="form-check-input" type="checkbox" id="checkbox2" v-model="form.exportDomain">
+              </div>
+            </div>
+          </div>
+
+
           <div class="card-footer">
             <div class="row mb-2">
               <div class="col-sm-5">
-                <button type="button" class="btn btn-outline-primary" v-on:click="saveData();">Save</button>&nbsp;
-                <button v-if="(form.id!=='')&&(form.id!==undefined)" type="button" class="btn btn-outline-danger" v-on:click="removeData();">Delete</button>&nbsp;
-                <button type="button" class="btn btn-outline-secondary" v-on:click="back();">Back</button>&nbsp;
+                <button type="button" class="btn btn-outline-primary" @click="saveData">Save</button>&nbsp;
+                <button type="button" class="btn btn-outline-danger" @click="confirmDelete">Delete</button>&nbsp;
+                <button type="button" class="btn btn-outline-secondary" @click="back">Back</button>&nbsp;
               </div>
             </div>
           </div>
@@ -57,9 +164,28 @@
   
   <script>
   import LoginDialog from '@/components/LoginDialog.vue'
+  import ModalDialog from '@/components/ModalDialog.vue'
+  import { createConfirmDialog } from 'vuejs-confirm-dialog'
   
   export default {
     setup() {
+      const { reveal, onConfirm, onCancel } = createConfirmDialog(ModalDialog, {
+        title : "Help role",
+        question: "Do you want to delete this record from Role table ?"
+      })
+
+      onConfirm(() => {
+        console.log('Confirmed!');
+        this.deleteData();
+      })
+
+      onCancel(() => {
+        console.log('Cancelled');
+      })
+
+      return {
+        reveal
+      }
     },
     components: {
       LoginDialog
@@ -70,11 +196,9 @@
           status : '',
           message: '',
           title : 'Change parameter',
-          form : {id : '', 'name': '', 'description' : ''},
-          grid: [
-            { label: 'Row 1', checkboxes: [{ id: 'checkbox1', value: false, hideCheckbox: true}, { id: 'checkbox1', value: false, hideCheckbox: false}] },
-            { label: 'Row 2', checkboxes: [{ id: 'checkbox2', value: false, hideCheckbox: false}, { id: 'checkbox1',value: false, hideCheckbox: false}] },
-                ],
+          form : {id : '', 'name': '', 'description' : '', 'addProject': 0, 'addSet': 0, 'calculatePatients': 0, 
+                  'editProject': 0, 'editSet': 0, 'exportCSV': 0, 'exportDomain': 0, 'identifyPatients': 0, 
+                  'prepareSet': 0, 'selectConcepts': 0},
 
       }
     },
@@ -94,11 +218,11 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/parameter";
+            url = this.$store.getters.serverUrl + "/roleedit/";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/parameter/" + this.form.id;
-            method = "PUT";
+            url = this.$store.getters.serverUrl + "/roleedit/" + this.form.id;
+            method = "POST";
         }
         var body = this.form
         fetch(url, {
@@ -123,7 +247,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/parameter/"+this.form.id;
+        var url = this.$store.getters.serverUrl + "/roleedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -138,8 +262,23 @@
       removeData() {
         this.$refs.login.refresh(this.removeDataCB);
       },
+      confirmDelete() {
+        const dialog = createConfirmDialog(ModalDialog,  {
+          title : "Help role",
+          question: "Do you want to delete this record from Role table ?"
+        })
+        dialog.onConfirm(() => {
+          this.deleteData()
+        })
+        dialog.reveal();
+      },
+      deleteData() {
+        if (this.form.id !== '') {
+          this.$refs.login.refresh(this.removeDataCB);
+        }
+      },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/parameter/"+this.form.id;
+        var url = this.$store.getters.serverUrl + "/roleedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"
@@ -157,7 +296,7 @@
         });
       },
       back() {
-          this.$router.push('/parameter');
+          this.$router.push('/role');
       },
     },
     created() {

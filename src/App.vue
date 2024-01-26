@@ -47,27 +47,27 @@ export default {
             },
             {
               title: 'Meta Field',
-              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              icon: faIcon({ icon: 'fa-solid fa-server' }),
               href: '/metafield'
             },
             {
               title: 'Data Field',
-              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              icon: faIcon({ icon: 'fa-solid fa-database' }),
               href: '/datafield'
             },
             {
               title: 'Help',
-              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              icon: faIcon({ icon: 'fa-solid fa-question-circle' }),
               href: '/help'
             },
             {
               title: 'User Setting',
-              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              icon: faIcon({ icon: 'fa-solid fa-users' }),
               href: '/usersetting'
             },
             {
               title: 'Roles',
-              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              icon: faIcon({ icon: 'fa-solid fa-user-tag' }),
               href: '/role'
             },
           ]
