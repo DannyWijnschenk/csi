@@ -1,6 +1,6 @@
 <template>
-  <!--<sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>-->
-  <sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
+  <sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
+<!--  <sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/> -->
   <main class="main" :class="{'collapsed' : collapsed}" :key="$route.path">
   <router-view/>
   </main>
@@ -28,7 +28,7 @@ export default {
       var menu = [];
       menu.push(
         {
-          header: 'CSI 0.1.1',
+          header: 'CSI 0.1.2',
         })
       menu.push(
         {
@@ -91,6 +91,14 @@ export default {
     console.log('location',location)
     var pathArray = path.split('/');
     var namespace = 'csi' //default namespace when app is started in development mode
+    //look if query params contain a namespace name for rest calls
+    var searchArray = location.search.split('&')
+    for (var iSearch = 0; iSearch < searchArray.length; iSearch++) {
+      if ((searchArray[iSearch].substring(0, 3) == 'ns=') || (searchArray[iSearch].substring(0, 4) == '?ns=')) {
+        namespace = searchArray[iSearch].split('=')[1]
+        console.log('switch rest to ',namespace)
+      }
+    }
     for (var i=0;i<pathArray.length;i++) {
       if (pathArray[i].substring(0,6)=='uzgent') {  //development local server Ivan
         namespace = pathArray[i].substring(0,6);
@@ -106,11 +114,11 @@ export default {
     var port = '';
     var domain = document.domain;
     var uri = '';
-    if ((namespace == 'uzgent') || (namespace == 'winfo') || (namespace == 'csi')) {  //connect to localhost for local development server
+    if ((namespace == 'uzgent') || (namespace == 'winfo') || (namespace == 'csi') || (namespace == 'demo')) {  //connect to localhost for local development server
       protocol = 'http';
       port = 57772;
       domain = 'localhost';
-      uri = '/csp/csi/'
+      uri = '/csp/'+namespace+'/'
     }
     ///var url = location.protocol+"//"+document.domain+":"+port+"/api/clinicom/"+namespace
     var url = protocol + '://' + domain + ":" + port + uri + "restapi/csi"
