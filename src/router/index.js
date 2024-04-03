@@ -14,6 +14,12 @@ import UserSettingGrid from '../views/UserSettingsGrid.vue'
 import UserSettingForm from '../views/UserSettingsFrm.vue'
 import RoleGrid from '../views/RoleGrid.vue'
 import RoleForm from '../views/RoleFrm.vue'
+import DomainGrid from '../views/DomainGrid.vue'
+import DomainForm from '../views/DomainFrm.vue'
+import VirtualDomainGrid from '../views/VirtualDomainGrid.vue'
+import VirtualDomainForm from '../views/VirtualDomainFrm.vue'
+import DictionaryDefinitionGrid from '../views/DictionaryDefinitionGrid.vue'
+import DictionaryDefinitionForm from '../views/DictionaryDefinitionFrm.vue'
 
 const routes = [
   { path: '/',  name: 'home',  component: HomeView },
@@ -32,6 +38,12 @@ const routes = [
   { path: '/usersetting/:id',  name: 'UserSetiingForm', component: UserSettingForm},
   { path: '/role',  name: 'RoleGrid', component: RoleGrid},
   { path: '/role/:id',  name: 'RoleForm', component: RoleForm},
+  { path: '/domain',  name: 'DomainGrid', component: DomainGrid},
+  { path: '/domain/:id',  name: 'DomainForm', component: DomainForm},
+  { path: '/virtualdomain',  name: 'VirtualDomainGrid', component: VirtualDomainGrid},
+  { path: '/virtualdomain/:id',  name: 'VirtualDomainForm', component: VirtualDomainForm},
+  { path: '/dictionary',  name: 'DictionaryDefinitionGrid', component: DictionaryDefinitionGrid},
+  { path: '/dictionary/:id',  name: 'DictionaryDefinitionForm', component: DictionaryDefinitionForm},
 
 
 ]

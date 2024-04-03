@@ -34,7 +34,7 @@
             <div class="row mb-2">
                 <div class="col-sm-3">Datatype</div>
                 <div class="col-sm-6">
-                    <select class="form-control" v-model="form.datatype">
+                    <select class="form-select" v-model="form.datatype">
                         <option value="String">String</option>
                         <option value="Numeric">Numeric</option>
                         <option value="Date">Date</option>
@@ -58,7 +58,7 @@
               <div class="col-sm-3" v-if="index === 0">Operators</div>
               <div class="col-sm-3" v-else></div>
               <div class="col-sm-6">
-                <select class="form-control" v-model="form.operators[index]">
+                <select class="form-select" v-model="form.operators[index]">
                   <option v-for="(option, index) in operatorOptions" :value="option" :key="index">
                     {{ option }}
                   </option>
