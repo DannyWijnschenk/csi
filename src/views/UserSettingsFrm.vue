@@ -41,7 +41,7 @@
             <div class="row mb-2">
               <div class="col-sm-3">Default Domain</div>
               <div class="col-sm-6">
-                <select class="form-control" v-model="form.defaultDomain">
+                <select class="form-select" v-model="form.defaultDomain">
                   <option v-for="(option, index) in domainList" :value="option.name" :key="index">
                     {{ option.name }}
                   </option>
@@ -51,7 +51,7 @@
             <div class="row mb-2">
               <div class="col-sm-3">Default Set Member</div>
               <div class="col-sm-6">
-                <select class="form-control" v-model="form.defaultSetMember">
+                <select class="form-select" v-model="form.defaultSetMember">
                   <option v-for="(option, index) in getFieldOptions()" :value="option.name" :key="index">
                     {{ option.name }}
                   </option>
@@ -61,7 +61,7 @@
             <div class="row mb-2">
               <div class="col-sm-3">Default Show Dashboard</div>
               <div class="col-sm-6">
-                <select class="form-control" v-model="form.defaultShowDashboard">
+                <select class="form-select" v-model="form.defaultShowDashboard">
                     <option value="All">All</option>
                     <option value="Favorites">Favorites</option>
                     <option value="Waiting for Input">Waiting for Input</option>
