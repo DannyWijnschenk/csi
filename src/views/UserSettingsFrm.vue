@@ -91,7 +91,7 @@
             <div class="row mb-2">
               <div class="col-sm-3">Role</div>
               <div class="col-sm-6">
-                <select class="form-control" v-model="form.role">
+                <select class="form-select" v-model="form.role">
                   <option v-for="(option, index) in roleList" :value="option.name" :key="index">
                     {{ option.name }}
                   </option>

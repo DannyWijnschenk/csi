@@ -23,17 +23,43 @@
               <div class="col-sm-4">{{form.id}}</div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">DisplayOrder</div>
-              <div class="col-sm-4"><input type="text" class="form-control" v-model="form.displayOrder"></div>
+              <div class="col-sm-3">Name</div>
+              <div class="col-sm-4"><input type="text" class="form-control" v-model="form.name"></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">Form</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.form"/></div>
+              <div class="col-sm-3">Description</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.description"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">Field</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.field"/></div>
+              <div class="col-sm-3">Owner</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.owner"></div>
             </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">Department</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.department"></div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-3">ColorBack</div>
+                <div class="col-sm-6">
+                    <div class="custom-color-input" @click="openColorPicker('colorBack')">
+                    <div class="selected-color" :style="{ backgroundColor: form.colorBack }"></div>
+                    <input type="text" class="form-control" v-model="form.colorBack" readonly>
+                    </div>
+                    <input ref="colorPickerBack" type="color" class="form-control" v-model="form.colorBack" style="display: none;">
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-sm-3">ColorText</div>
+                <div class="col-sm-6">
+                    <div class="custom-color-input" @click="openColorPicker('colorText')">
+                    <div class="selected-color" :style="{ backgroundColor: form.colorText }"></div>
+                    <input type="text" class="form-control" v-model="form.colorText" readonly>
+                    </div>
+                    <input ref="colorPickerText" type="color" class="form-control" v-model="form.colorText" style="display: none;">
+                </div>
+            </div>
+
             <div class="row mb-2">
                 <div class="col-sm-3">Language</div>
                 <div class="col-sm-6">
@@ -45,14 +71,11 @@
                 </div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">Title</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.title"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">Content</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.content"/></div>
+              <div class="col-sm-3">Enabled</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.enabled"></div>
             </div>
           </div>
+
           <div class="card-footer">
             <div class="row mb-2">
               <div class="col-sm-5">
@@ -66,9 +89,7 @@
       </form>
     </div>
   </template>
-
-  <DialogsWrapper />
-
+  
   <script>
   import LoginDialog from '@/components/LoginDialog.vue'
   import ModalDialog from '@/components/ModalDialog.vue'
@@ -77,8 +98,8 @@
   export default {
     setup() {
       const { reveal, onConfirm, onCancel } = createConfirmDialog(ModalDialog, {
-        title : "Help delete",
-        question: "Do you want to delete this record from Help table ?"
+        title : "Delete dictionary definition",
+        question: "Do you want to delete this record from DictionaryDefinition table ?"
       })
 
       onConfirm(() => {
@@ -95,15 +116,17 @@
       }
     },
     components: {
-      LoginDialog
+      LoginDialog,
     },
     data() {
       return {
           error : '',
           status : '',
           message: '',
-          title : 'Change help',
-          form : {id : '', 'displayOrder': '', 'form' : '', 'field': '', 'language': '', 'title': '', 'content': ''},
+          title : 'Change dictionary definition',
+          form : {id : '', 'name': '', 'description' : '', 'owner': '', 'department': '', 'colorText': '#ffffff', 'colorBack': '#ffffff', 'language': '', 'enabled': 0},
+          hexColor: '#ffffff'
+
       }
     },
     computed: {
@@ -113,6 +136,22 @@
       }
     },
     methods: {
+        openColorPicker(field) {
+      const colorPicker = field === 'colorBack' ? this.$refs.colorPickerBack : this.$refs.colorPickerText;
+      colorPicker.click();
+    },
+      updateHexColor(event) {
+        const selectedColor = event.target.value;
+        
+        const hexColor = this.rgbToHex(selectedColor);
+        
+        this.hexColor = hexColor;
+     },
+     rgbToHex(rgb) {
+      const [r, g, b] = rgb.slice(1).match(/.{1,2}/g);
+
+      return `#${(+r).toString(16)}${(+g).toString(16)}${(+b).toString(16)}`;
+    },
       loggedin() {
       },
       saveData() {
@@ -122,10 +161,10 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/helpedit/";
+            url = this.$store.getters.serverUrl + "/dictionaryedit/";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/helpedit/" + this.form.id;
+            url = this.$store.getters.serverUrl + "/dictionaryedit/" + this.form.id;
             method = "POST";
         }
         var body = this.form
@@ -151,7 +190,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/helpedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl + "/dictionaryedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -168,8 +207,8 @@
       },
       confirmDelete() {
         const dialog = createConfirmDialog(ModalDialog,  {
-          title : "Help delete",
-          question: "Do you want to delete this record from Help table ?"
+            title : "Delete dictionary definition",
+            question: "Do you want to delete this record from DictionaryDefinition table ?"
         })
         dialog.onConfirm(() => {
           this.deleteData()
@@ -182,7 +221,7 @@
         }
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/helpedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl + "/dictionaryedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"
@@ -200,7 +239,7 @@
         });
       },
       back() {
-          this.$router.push('/help');
+          this.$router.push('/dictionary');
       },
     },
     created() {

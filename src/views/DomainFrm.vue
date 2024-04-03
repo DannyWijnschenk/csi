@@ -23,36 +23,27 @@
               <div class="col-sm-4">{{form.id}}</div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">DisplayOrder</div>
-              <div class="col-sm-4"><input type="text" class="form-control" v-model="form.displayOrder"></div>
+              <div class="col-sm-3">Name</div>
+              <div class="col-sm-4"><input type="text" class="form-control" v-model="form.name"></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">Form</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.form"/></div>
+              <div class="col-sm-3">iKnowDomainId</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.iKnowDomainId"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">Field</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.field"/></div>
+              <div class="col-sm-3">iKnowDomainName</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.iKnowDomainName"></div>
             </div>
             <div class="row mb-2">
-                <div class="col-sm-3">Language</div>
-                <div class="col-sm-6">
-                    <select class="form-select" v-model="form.language">
-                        <option value="NL">NL</option>
-                        <option value="EN">EN</option>
-                        <option value="FR">FR</option>
-                    </select>
-                </div>
+              <div class="col-sm-3">Namespace</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.namespace"></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">Title</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.title"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">Content</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.content"/></div>
+              <div class="col-sm-3">Enabled</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.enabled"></div>
             </div>
           </div>
+
           <div class="card-footer">
             <div class="row mb-2">
               <div class="col-sm-5">
@@ -66,9 +57,7 @@
       </form>
     </div>
   </template>
-
-  <DialogsWrapper />
-
+  
   <script>
   import LoginDialog from '@/components/LoginDialog.vue'
   import ModalDialog from '@/components/ModalDialog.vue'
@@ -77,8 +66,8 @@
   export default {
     setup() {
       const { reveal, onConfirm, onCancel } = createConfirmDialog(ModalDialog, {
-        title : "Help delete",
-        question: "Do you want to delete this record from Help table ?"
+        title : "Delete domain",
+        question: "Do you want to delete this record from Domain table ?"
       })
 
       onConfirm(() => {
@@ -102,8 +91,9 @@
           error : '',
           status : '',
           message: '',
-          title : 'Change help',
-          form : {id : '', 'displayOrder': '', 'form' : '', 'field': '', 'language': '', 'title': '', 'content': ''},
+          title : 'Change domain',
+          form : {id : '', 'name': '', 'iKnowDomainId' : '', 'iKnowDomainName': '', 'namespace': ''},
+
       }
     },
     computed: {
@@ -122,11 +112,11 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/helpedit/";
+            url = this.$store.getters.serverUrl + "/csidomain";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/helpedit/" + this.form.id;
-            method = "POST";
+            url = this.$store.getters.serverUrl + "/csidomain/" + this.form.id;
+            method = "PUT";
         }
         var body = this.form
         fetch(url, {
@@ -151,7 +141,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/helpedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl + "/csidomain/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -168,8 +158,8 @@
       },
       confirmDelete() {
         const dialog = createConfirmDialog(ModalDialog,  {
-          title : "Help delete",
-          question: "Do you want to delete this record from Help table ?"
+          title : "Delete domain",
+          question: "Do you want to delete this record from Domain table ?"
         })
         dialog.onConfirm(() => {
           this.deleteData()
@@ -182,7 +172,7 @@
         }
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/helpedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl + "/csidomain/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"
@@ -200,7 +190,7 @@
         });
       },
       back() {
-          this.$router.push('/help');
+          this.$router.push('/domain');
       },
     },
     created() {

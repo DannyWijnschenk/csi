@@ -28,7 +28,7 @@ export default {
       var menu = [];
       menu.push(
         {
-          header: 'CSI 0.1.2',
+          header: 'CSI 0.1.5',
         })
       menu.push(
         {
@@ -69,6 +69,21 @@ export default {
               title: 'Roles',
               icon: faIcon({ icon: 'fa-solid fa-user-tag' }),
               href: '/role'
+            },
+            {
+              title: 'Domain',
+              icon: faIcon({ icon: 'fa-solid fa-list' }),
+              href: '/domain'
+            },
+            {
+              title: 'VirtualDomain',
+              icon: faIcon({ icon: 'fa-solid fa-list' }), 
+              href: '/virtualdomain'
+            },
+            {
+              title: 'DictionaryDefinition',
+              icon: faIcon({ icon: 'fa-solid fa-list' }), 
+              href: '/dictionary'
             },
           ]
         }
