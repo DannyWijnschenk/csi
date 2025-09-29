@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
 import LoginForm from '../views/LoginFrm.vue'
 import MenuGrid from '../views/MenuGrid.vue'
@@ -23,6 +23,7 @@ import DictionaryDefinitionForm from '../views/DictionaryDefinitionFrm.vue'
 
 const routes = [
   { path: '/',  name: 'home',  component: HomeView },
+  { path: '/home',  name: 'home',  component: HomeView },
   { path: '/about', name: 'about', component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue') },
   { path: '/login', name: 'FrmLogin', component: LoginForm },
   { path: '/menu',  name: 'MenuGrid', component: MenuGrid },
@@ -48,8 +49,9 @@ const routes = [
 
 ]
 
+
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes
 })
 

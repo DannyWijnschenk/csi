@@ -1,4 +1,7 @@
 <template>
+  <div v-show=showLogin>
+    <button type="button" class="btn btn-outline-secondary" v-on:click="login();">Login</button>&nbsp;
+  </div>
   <sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
 <!--  <sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/> -->
   <main class="main" :class="{'collapsed' : collapsed}" :key="$route.path">
@@ -23,6 +26,10 @@ const faIcon = (props) => {
 }
 export default {
   computed: {
+    showLogin: function ()
+      {
+        return !this.$store.getters.isLoggedIn;
+      },
     menu: function () {
       console.log('menu rights patients', this.$store.getters.getRights.includes('patients'));
       var menu = [];
@@ -36,6 +43,52 @@ export default {
           icon: faIcon({ icon: 'fa-solid fa-toolbox' }),
           child: [
             {
+              title: 'Sources',
+              icon: faIcon({ icon: 'fa-solid fa-file-import' }),
+              child: [
+                {
+                  title: 'Physical Domains',
+                  icon: faIcon({ icon: 'fa-solid fa-folder' }),
+                  href: '/domain'
+                },
+                {
+                  title: 'Virtual Domains',
+                  icon: faIcon({ icon: 'fa-solid fa-folder-plus' }),
+                  href: '/virtualdomain'
+                },
+                {
+                  title: 'Meta Fields',
+                  icon: faIcon({ icon: 'fa-solid fa-file-code' }),
+                  href: '/metafield'
+                },
+              ]
+            },
+            {
+              title: 'Data Fields',
+              icon: faIcon({ icon: 'fa-solid fa-database' }),
+              href: '/datafield'
+            },
+            {
+              title: 'Dictionaries',
+              icon: faIcon({ icon: 'fa-solid fa-list' }), 
+              href: '/dictionary'
+            },
+            {
+              title: 'Roles',
+              icon: faIcon({ icon: 'fa-solid fa-user-tag' }),
+              href: '/role'
+            },
+            {
+              title: 'User Settings',
+              icon: faIcon({ icon: 'fa-solid fa-users' }),
+              href: '/usersetting'
+            },
+            {
+              title: 'Help',
+              icon: faIcon({ icon: 'fa-solid fa-question-circle' }),
+              href: '/help'
+            },
+            {
               title: 'Parameters',
               icon: faIcon({ icon: 'fa-solid fa-wrench' }),
               href: '/parameter'
@@ -45,46 +98,7 @@ export default {
               icon: faIcon({ icon: 'fa-solid fa-list' }),
               href: '/menu'
             },
-            {
-              title: 'Meta Field',
-              icon: faIcon({ icon: 'fa-solid fa-server' }),
-              href: '/metafield'
-            },
-            {
-              title: 'Data Field',
-              icon: faIcon({ icon: 'fa-solid fa-database' }),
-              href: '/datafield'
-            },
-            {
-              title: 'Help',
-              icon: faIcon({ icon: 'fa-solid fa-question-circle' }),
-              href: '/help'
-            },
-            {
-              title: 'User Setting',
-              icon: faIcon({ icon: 'fa-solid fa-users' }),
-              href: '/usersetting'
-            },
-            {
-              title: 'Roles',
-              icon: faIcon({ icon: 'fa-solid fa-user-tag' }),
-              href: '/role'
-            },
-            {
-              title: 'Domain',
-              icon: faIcon({ icon: 'fa-solid fa-list' }),
-              href: '/domain'
-            },
-            {
-              title: 'VirtualDomain',
-              icon: faIcon({ icon: 'fa-solid fa-list' }), 
-              href: '/virtualdomain'
-            },
-            {
-              title: 'DictionaryDefinition',
-              icon: faIcon({ icon: 'fa-solid fa-list' }), 
-              href: '/dictionary'
-            },
+
           ]
         }
       )
@@ -97,7 +111,10 @@ export default {
     }
   },
   methods: {
-
+    login() {
+      console.log('login');
+      this.$router.push('/home');
+    },
   },
   mounted() {
     console.log("app is mounted");

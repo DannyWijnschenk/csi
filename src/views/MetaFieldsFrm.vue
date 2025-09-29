@@ -23,60 +23,60 @@
               <div class="col-sm-4">{{form.id}}</div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">DisplayName</div>
+              <div class="col-sm-3">MetaField Name</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.MetaFieldName"/></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">Display Name</div>
               <div class="col-sm-4"><input type="text" class="form-control" v-model="form.DisplayName"></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">DomainName</div>
+              <div class="col-sm-3">Domain Name</div>
               <div class="col-sm-6"><input type="text" class="form-control" v-model="form.DomainName"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">InExport</div>
-              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.InExport"/></div>
+              <div class="col-sm-3">In Members</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.inMembers"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">InTimeline</div>
+              <div class="col-sm-3">In Sentences</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.inSentences"/></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">In Timeline</div>
               <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.InTimeline"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">IsUrl</div>
-              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="formIsUrl"/></div>
+              <div class="col-sm-3">In Export</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.InExport"/></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">Source Order</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.SourceOrder"/></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">Sentence Order</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.SentenceOrder"/></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">Timeline Order</div>
+              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.TimelineOrder"/></div>
+            </div>
+            <div class="row mb-2">
+              <div class="col-sm-3">Need Anonymization</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.NeedAnonymization"/></div>
             </div>
             <div class="row mb-2">
               <div class="col-sm-3">Markup</div>
               <div class="col-sm-6"><input type="text" class="form-control" v-model="form.Markup"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">MarkupValue</div>
+              <div class="col-sm-3">Markup Value</div>
               <div class="col-sm-6"><input type="text" class="form-control" v-model="form.MarkupValue"/></div>
             </div>
             <div class="row mb-2">
-              <div class="col-sm-3">MetaFieldName</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.MetaFieldName"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">NeedAnonymization</div>
-              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.NeedAnonymization"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">SentenceOrder</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.SentenceOrder"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">SourceOrder</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.SourceOrder"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">TimelineOrder</div>
-              <div class="col-sm-6"><input type="text" class="form-control" v-model="form.TimelineOrder"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">inMembers</div>
-              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.inMembers"/></div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-sm-3">inSentences</div>
-              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="form.inSentences"/></div>
+              <div class="col-sm-3">Is Url</div>
+              <div class="col-sm-6"><input type="checkbox" class="form-check-input" v-model="formIsUrl"/></div>
             </div>
           </div>
           <div class="card-footer">

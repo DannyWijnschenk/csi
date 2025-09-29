@@ -1,4 +1,5 @@
 <template>
+     home
     <div v-show=showLogin> 
       <login-dialog ref="login" title="Login Server" :ott="getOtt()" v-on:loggedin="loggedin"></login-dialog>
     </div>
@@ -44,6 +45,9 @@
       closemodal() {
         this.isModalVisible = false;
       }
+    },
+    mounted() {
+      console.log('home view');
     }
   }
   </script>
