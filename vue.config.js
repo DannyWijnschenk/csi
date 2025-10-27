@@ -1,12 +1,14 @@
 const { defineConfig } = require('@vue/cli-service');
 
+const URL = 'http://51.38.114.8'
+
 module.exports = defineConfig({
   transpileDependencies: true,
   publicPath: process.env.NODE_ENV === 'production' ? '././' : '',
   devServer: {
     proxy: {
       '/api/web': {
-        target: 'http://51.38.114.8/csp/csi/restapi/csi',
+        target: URL + '/csp/csi/restapi/csi',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/api/web': '' },
@@ -22,7 +24,7 @@ module.exports = defineConfig({
         }
       },
       '/api/d2': {
-        target: 'http://51.38.114.8/csp/csi/restapi/d2',
+        target: URL + '/csp/csi/restapi/d2',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/api/d2': '' },
