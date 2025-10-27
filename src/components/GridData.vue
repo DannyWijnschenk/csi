@@ -117,9 +117,9 @@
           this.resultKey = ''
         }
         if (selection===undefined) {
-          url = this.$store.getters.serverUrl+"/grid/"+this.table+ "?selection="
+          url = "/api/web/grid/"+this.table+ "?selection="
         } else {
-          url = this.$store.getters.serverUrl + "/grid/" + this.table + "?selection=" + selection
+          url = "/api/web/grid/" + this.table + "?selection=" + selection
           if (selection != this.selection) {
             //new selection : we need a new query !
             this.resultKey = '';  //todo : purge the old results, or we need a param to invalidate the results and run the query again
@@ -176,11 +176,11 @@
           });
       },
       nextPage() {
-        var url = this.$store.getters.serverUrl+"/v1/grid/"+this.table + this.pagination.nextPageLink;
+        var url = "/api/web/v1/grid/"+this.table + this.pagination.nextPageLink;
         this.doFetch(url);
       },
       prevPage() {
-        var url = this.$store.getters.serverUrl+"/v1/grid/"+this.table + this.pagination.previousPageLink;
+        var url = "/api/web/v1/grid/"+this.table + this.pagination.previousPageLink;
         this.doFetch(url);
       },
       sort() {

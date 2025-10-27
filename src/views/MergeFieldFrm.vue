@@ -126,10 +126,10 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/mergefield";
+            url = "/api/web/mergefield";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/mergefield/" + this.form.id;
+            url = "/api/web/mergefield/" + this.form.id;
             method = "PUT";
         }
         var body = this.form
@@ -155,7 +155,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/mergefield/"+this.form.id;
+        var url = "/api/web/mergefield/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -186,7 +186,7 @@
         }
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/mergefield/"+this.form.id;
+        var url = "/api/web/mergefield/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

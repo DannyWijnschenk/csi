@@ -51,7 +51,7 @@
     },
     methods : {
       login() {  //login on the server
-        var url = this.$store.getters.serverUrl + "/token";
+        var url = "/api/web/token";
         fetch(url, {
           "method": "GET",			  
           "headers" : { "authorization": 'basic ' + btoa(this.user+':'+this.password), "app": this.$store.getters.appName }
@@ -91,7 +91,7 @@
       forceRefresh(callBack, args) {
         this.refreshIsCalling = true;
               console.log('refresh access token');
-              fetch(this.$store.getters.serverUrl + "/v1/refresh", {
+              fetch("/api/web/v1/refresh", {
                   "headers": { "authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
                   "body": JSON.stringify({ "refreshToken": this.$store.getters.serverRefreshToken }),
                   "method": "POST"
@@ -140,7 +140,7 @@
           }
       },
     getRights(right) {
-       var url = this.$store.getters.serverUrl + "/v1/accessrights";
+       var url = "/api/web/v1/accessrights";
         var body = {"application" : this.$store.getters.appName+'.'+right}
           fetch(url, {
             "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },

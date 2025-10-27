@@ -122,10 +122,10 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/helpedit/";
+            url = "/api/web/helpedit/";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/helpedit/" + this.form.id;
+            url = "/api/web/helpedit/" + this.form.id;
             method = "POST";
         }
         var body = this.form
@@ -151,7 +151,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/helpedit/"+this.form.id;
+        var url = "/api/web/helpedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -182,7 +182,7 @@
         }
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/helpedit/"+this.form.id;
+        var url = "/api/web/helpedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

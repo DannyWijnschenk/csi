@@ -1,6 +1,5 @@
 <template>
-     home
-    <div v-show=showLogin> 
+    <div v-if=showLogin> 
       <login-dialog ref="login" title="Login Server" :ott="getOtt()" v-on:loggedin="loggedin"></login-dialog>
     </div>
     <div class="home" v-if='this.$store.getters.isLoggedIn'>

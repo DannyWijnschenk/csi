@@ -100,10 +100,10 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/virtualdomainedit/";
+            url = "/api/web/virtualdomainedit/";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/virtualdomainedit/" + this.form.id;
+            url = "/api/web/virtualdomainedit/" + this.form.id;
             method = "POST";
         }
         var body = this.form
@@ -129,7 +129,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/virtualdomainedit/"+this.form.id;
+        var url = "/api/web/virtualdomainedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -160,7 +160,7 @@
         }
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/virtualdomainedit/"+this.form.id;
+        var url = "/api/web/virtualdomainedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

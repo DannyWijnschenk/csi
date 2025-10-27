@@ -158,13 +158,12 @@
         this.$refs.login.refresh(this.saveDataCB);
       },
       saveDataCB() {
-        var url = ""
+        var url = "/api/web/dictionaryedit/";
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/dictionaryedit/";
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/dictionaryedit/" + this.form.id;
+            url += this.form.id;
             method = "POST";
         }
         var body = this.form
@@ -190,7 +189,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/dictionaryedit/"+this.form.id;
+        var url = "/api/web/dictionaryedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -221,7 +220,7 @@
         }
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/dictionaryedit/"+this.form.id;
+        var url = "/api/web/dictionaryedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

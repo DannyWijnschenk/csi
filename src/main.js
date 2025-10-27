@@ -180,6 +180,7 @@ const store = createStore({
     },
     getters: {
         serverUrl(state) {   //this.$store.getters.serverUrl
+            console.log(state.server)
             return state.server;
         },
         system(state) {

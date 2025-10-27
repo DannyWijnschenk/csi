@@ -188,10 +188,10 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = this.$store.getters.serverUrl + "/useredit/" + this.form.initials;
+            url = "/api/web/useredit/" + this.form.initials;
             method = "POST";
         } else {
-            url = this.$store.getters.serverUrl + "/useredit/" + this.form.initials;
+            url = "/api/web/useredit/" + this.form.initials;
             method = "POST";
         }
         var body = this.form
@@ -217,7 +217,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = this.$store.getters.serverUrl + "/useredit/"+this.form.id;
+        var url = "/api/web/useredit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -230,7 +230,7 @@
         });
       },
       fetchDomains() {
-        const url = this.$store.getters.serverUrl + "/domain";
+        const url = "/api/web/domain";
 
         fetch(url, {
             headers: { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
@@ -253,7 +253,7 @@
 
     fetchDomainFields() {
         const fieldRequests = this.domainList.map(domain => {
-            const fieldUrl = this.$store.getters.serverUrl + "/domain/" + domain.id + "/field";
+            const fieldUrl = "/api/web/domain/" + domain.id + "/field";
 
             return fetch(fieldUrl, {
             headers: { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
@@ -279,7 +279,7 @@
     },
 
     fetchRole() {
-        const url = this.$store.getters.serverUrl + "/rolelist";
+        const url = "/api/web/rolelist";
 
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
@@ -296,7 +296,7 @@
         this.$refs.login.refresh(this.removeDataCB);
       },
       removeDataCB() {
-        var url = this.$store.getters.serverUrl + "/useredit/"+this.form.id;
+        var url = "/api/web/useredit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

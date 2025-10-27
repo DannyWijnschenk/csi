@@ -1,7 +1,7 @@
 <template>
-  <div v-show=showLogin>
+  <!-- <div v-show=showLogin>
     <button type="button" class="btn btn-outline-secondary" v-on:click="login();">Login</button>&nbsp;
-  </div>
+  </div> -->
   <sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
 <!--  <sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/> -->
   <main class="main" :class="{'collapsed' : collapsed}" :key="$route.path">
@@ -98,6 +98,27 @@ export default {
               icon: faIcon({ icon: 'fa-solid fa-list' }),
               href: '/menu'
             },
+            {
+              title: 'Domain Definition',
+              icon: faIcon({ icon: 'fa-solid fa-file-import' }),
+              child: [
+                {
+                  title: 'Definitions',
+                  icon: faIcon({ icon: 'fa-solid fa-folder' }),
+                  href: '/definitions'
+                },
+                {
+                  title: 'Tables',
+                  icon: faIcon({ icon: 'fa-solid fa-folder-plus' }),
+                  href: '/tables'
+                },
+                {
+                  title: 'Overview',
+                  icon: faIcon({ icon: 'fa-solid fa-file-code' }),
+                  href: '/domaintiming'
+                },
+              ]
+            },
 
           ]
         }
@@ -148,12 +169,11 @@ export default {
     var uri = '';
     if ((namespace == 'uzgent') || (namespace == 'winfo') || (namespace == 'csi') || (namespace == 'demo')) {  //connect to localhost for local development server
       protocol = 'http';
-      port = 57772;
-      domain = 'localhost';
+      domain = '51.38.114.8';
       uri = '/csp/'+namespace+'/'
     }
     ///var url = location.protocol+"//"+document.domain+":"+port+"/api/clinicom/"+namespace
-    var url = protocol + '://' + domain + ":" + port + uri + "restapi/csi"
+    var url = protocol + '://' + domain + (port? ":": '') + port + uri + "restapi/csi"
     console.log("environment",process.env.NODE_ENV)
     this.$store.dispatch('setServer',url);
     this.$store.dispatch('setSystem',namespace);

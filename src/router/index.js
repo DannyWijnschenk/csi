@@ -20,9 +20,12 @@ import VirtualDomainGrid from '../views/VirtualDomainGrid.vue'
 import VirtualDomainForm from '../views/VirtualDomainFrm.vue'
 import DictionaryDefinitionGrid from '../views/DictionaryDefinitionGrid.vue'
 import DictionaryDefinitionForm from '../views/DictionaryDefinitionFrm.vue'
+import DefinitionsGrid from '../views/DefinitionsGrid.vue'
+import TablesGrid from '../views/TablesGrid.vue'
+import DomainTiming from '../views/DomainTiming.vue'
 
 const routes = [
-  { path: '/',  name: 'home',  component: HomeView },
+  { path: '/',  name: 'root',  component: HomeView },
   { path: '/home',  name: 'home',  component: HomeView },
   { path: '/about', name: 'about', component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue') },
   { path: '/login', name: 'FrmLogin', component: LoginForm },
@@ -45,7 +48,9 @@ const routes = [
   { path: '/virtualdomain/:id',  name: 'VirtualDomainForm', component: VirtualDomainForm},
   { path: '/dictionary',  name: 'DictionaryDefinitionGrid', component: DictionaryDefinitionGrid},
   { path: '/dictionary/:id',  name: 'DictionaryDefinitionForm', component: DictionaryDefinitionForm},
-
+  { path: '/definitions', name: 'DefinitionsGrid', component: DefinitionsGrid },
+  { path: '/tables', name: 'TablesGrid', component: TablesGrid },
+  { path: '/domaintiming', name: 'DomainTiming', component: DomainTiming },
 
 ]
 
