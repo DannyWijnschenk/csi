@@ -117,6 +117,11 @@ export default {
                   icon: faIcon({ icon: 'fa-solid fa-file-code' }),
                   href: '/domaintiming'
                 },
+                {
+                  title: 'Source Form Group',
+                  icon: faIcon({ icon: 'fa-solid fa-file-code' }),
+                  href: '/sourceformgroup'
+                }
               ]
             },
 

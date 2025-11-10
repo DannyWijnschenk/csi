@@ -23,6 +23,9 @@ import DictionaryDefinitionForm from '../views/DictionaryDefinitionFrm.vue'
 import DefinitionsGrid from '../views/DefinitionsGrid.vue'
 import TablesGrid from '../views/TablesGrid.vue'
 import DomainTiming from '../views/DomainTiming.vue'
+import SourceFormGroupGrid from '../views/SourceFormGroupGrid.vue'
+import SourceFormGroupFrm from '../views/SourceFormGroupFrm.vue'
+
 
 const routes = [
   { path: '/',  name: 'root',  component: HomeView },
@@ -51,6 +54,8 @@ const routes = [
   { path: '/definitions', name: 'DefinitionsGrid', component: DefinitionsGrid },
   { path: '/tables', name: 'TablesGrid', component: TablesGrid },
   { path: '/domaintiming', name: 'DomainTiming', component: DomainTiming },
+  { path: '/sourceformgroup', name: 'SourceFormGroupGrid', component: SourceFormGroupGrid },
+  { path: '/sourceformgroup/:id', name: 'SourceFormGroupFrm', component: SourceFormGroupFrm },
 
 ]
 
