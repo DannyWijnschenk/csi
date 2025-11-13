@@ -10,73 +10,77 @@
       />
 
       <h4>SourceForms</h4>
-      <button
-        class="btn btn-sm btn-outline-primary mb-3"
-        @click="showTree = !showTree"
-      >
-        {{ showTree ? "Hide" : "Add [+]" }}
-      </button>
 
       <div v-if="selectedForms.length === 0" class="text-muted">
         No SourceForms selected
       </div>
-      <ul v-else>
-        <li v-for="(sf, index) in selectedForms" :key="sf.sourceForm">
-          {{ sf.sourceForm }}
-          <button
-            class="btn btn-sm btn-outline-danger ms-2"
+        <ul v-else class="selected-list">
+        <li
+            v-for="(sf, index) in selectedForms"
+            :key="sf.sourceForm"
+            class="item-row"
+        >
+            <span class="item-text">{{ sf.sourceForm }}</span>
+            <button
+            class="btn btn-sm btn-outline-danger delete-btn"
             @click="removeForm(index)"
-          >
+            >
             Delete
-          </button>
+            </button>
         </li>
-      </ul>
+        </ul>
 
-      <button class="btn btn-primary mt-3" @click="saveGroup">
-        💾 Save Group
-      </button>
-    <button class="btn btn-secondary mt-2" @click="goBack">
-    ⬅️ Back
-    </button>
+
+        <div class="row mb-2">
+            <div class="col-sm-5">
+            <button type="button" class="btn btn-outline-primary" v-on:click="saveGroup();">Save Group</button>&nbsp;
+            <button type="button" class="btn btn-outline-secondary" v-on:click="goBack();">Back</button>&nbsp;
+            </div>
+        </div>
     </div>
 
     <div v-if="showTree" class="tree-container card mt-4 p-3">
       <h4>Select SourceForms</h4>
-      <ul>
+      <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in groupedForms" :key="prefix">
-          <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center">
             <button class="btn btn-sm" @click="toggle(prefix)">
-              {{ expanded[prefix] ? "[-]" : "[+]" }}
+                {{ expanded[prefix] ? "[-]" : "[+]" }}
             </button>
             <input
-              type="checkbox"
-              :checked="isGroupSelected(prefix)"
-              @change="toggleGroup(prefix)"
+                type="checkbox"
+                :checked="isGroupSelected(prefix)"
+                @change="toggleGroup(prefix)"
             />
             <b class="ms-2">{{ prefix }}</b>
             <span class="ms-2 text-secondary small">
-              ({{ countSelected(prefix) }}/{{ group.length }})
+                ({{ countSelected(prefix) }}/{{ group.length }})
             </span>
-          </div>
-          <ul v-show="expanded[prefix]" class="ms-4">
+            </div>
+
+            <ul v-show="expanded[prefix]" class="ms-4">
             <li v-for="sf in group" :key="sf.sourceForm">
-              <input
+                <input
                 type="checkbox"
                 v-model="selectedFormsText"
                 :value="sf.sourceForm"
-              />
-              {{ sf.sourceForm }}
-              <span v-if="sf.inGroup" class="text-muted small ms-2">
+                />
+                {{ sf.sourceForm }}
+                <span v-if="sf.inGroup" class="text-muted small ms-2">
                 [{{ sf.inGroup }}]
-              </span>
+                </span>
             </li>
-          </ul>
+            </ul>
         </li>
-      </ul>
+        </ul>
 
-      <button class="btn btn-sm btn-success mt-3" @click="confirmSelection">
+    <div class="row mb-2">
+    <div class="col-sm-5">
+      <button class="btn btn-outline-primary mt-3" @click="confirmSelection">
         Select
       </button>
+      </div>
+      </div>
     </div>
   </div>
 </template>
@@ -86,7 +90,7 @@ export default {
   data() {
     return {
       groupName: "",
-      showTree: false,
+      showTree: true,
       sourceForms: [],
       groupedForms: {},
       expanded: {},
@@ -272,4 +276,32 @@ export default {
 button.btn-sm {
   padding: 2px 6px;
 }
+
+.outer-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 24px;
+  padding-left: 0;
+}
+
+.outer-grid > li {
+  list-style: none;
+}
+
+.selected-list .item-row {
+  display: grid;
+  grid-template-columns: 150px auto; 
+  align-items: center;
+  list-style: none;
+  padding: 4px 0;
+}
+
+.item-text {
+  white-space: nowrap;
+}
+
+.delete-btn {
+  justify-self: start;
+}
+
 </style>

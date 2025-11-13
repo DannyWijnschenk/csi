@@ -2,7 +2,20 @@
   <!-- <div v-show=showLogin>
     <button type="button" class="btn btn-outline-secondary" v-on:click="login();">Login</button>&nbsp;
   </div> -->
-  <sidebar-menu v-if='this.$store.getters.isLoggedIn' :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/>
+<sidebar-menu
+  :menu="menu"
+  v-model:collapsed="collapsed"
+  :theme="selectedTheme"
+  @item-click="onSidebarClick"
+  v-if='this.$store.getters.isLoggedIn'
+>
+  <template #header>
+    <div class="sidebar-logo">
+      <img :src="require('@/assets/logoCSI2.png')" alt="Logo" />
+    </div>
+  </template>
+</sidebar-menu>
+
 <!--  <sidebar-menu :menu="menu" v-model:collapsed="collapsed" :theme="selectedTheme" @item-click="onSidebarClick"/> -->
   <main class="main" :class="{'collapsed' : collapsed}" :key="$route.path">
   <router-view/>
@@ -217,5 +230,31 @@ nav a.router-link-exact-active {
 
 .v-sidebar-menu {
   width: 350px;
+  padding-top: 40px;
+  background-color: #2c3e50 !important;
 }
+
+.sidebar-logo {
+  position: fixed; 
+  top: 0px;
+  left: 0px;
+  z-index: 9999; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  padding: 0;
+  width: auto;
+  height: auto;
+}
+
+.sidebar-logo img {
+  width: 64px;   
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+
+
 </style>
