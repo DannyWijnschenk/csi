@@ -84,10 +84,6 @@
             <b>Exist in:</b>
             {{ formsInGroup[sf.sourceForm].join(', ') }}
             </span>
-
-              <span v-if="sf.inGroup" class="text-muted small ms-2">
-                [{{ sf.inGroup }}]
-              </span>
             </li>
           </ul>
         </li>
