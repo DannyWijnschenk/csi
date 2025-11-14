@@ -14,72 +14,94 @@
       <div v-if="selectedForms.length === 0" class="text-muted">
         No SourceForms selected
       </div>
-        <ul v-else class="selected-list">
+      <ul v-else class="selected-list">
         <li
-            v-for="(sf, index) in selectedForms"
-            :key="sf.sourceForm"
-            class="item-row"
+          v-for="(sf, index) in selectedForms"
+          :key="sf.sourceForm"
+          class="item-row"
         >
-            <span class="item-text">{{ sf.sourceForm }}</span>
-            <button
+          <span class="item-text">{{ sf.sourceForm }}</span>
+          <button
             class="btn btn-sm btn-outline-danger delete-btn"
             @click="removeForm(index)"
-            >
+          >
             Delete
-            </button>
+          </button>
         </li>
-        </ul>
+      </ul>
 
-
-        <div class="row mb-2">
-            <div class="col-sm-5">
-            <button type="button" class="btn btn-outline-primary" v-on:click="saveGroup();">Save Group</button>&nbsp;
-            <button type="button" class="btn btn-outline-secondary" v-on:click="goBack();">Back</button>&nbsp;
-            </div>
+      <div class="row mb-2">
+        <div class="col-sm-5">
+          <button
+            type="button"
+            class="btn btn-outline-primary"
+            v-on:click="saveGroup()"
+          >
+            Save Group</button
+          >&nbsp;
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            v-on:click="goBack()"
+          >
+            Back</button
+          >&nbsp;
         </div>
+      </div>
     </div>
 
     <div v-if="showTree" class="tree-container card mt-4 p-3">
       <h4>Select SourceForms</h4>
       <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in groupedForms" :key="prefix">
-            <div class="d-flex align-items-center">
+          <div class="d-flex align-items-center">
             <button class="btn btn-sm" @click="toggle(prefix)">
-                {{ expanded[prefix] ? "[-]" : "[+]" }}
+              {{ expanded[prefix] ? "[-]" : "[+]" }}
             </button>
             <input
-                type="checkbox"
-                :checked="isGroupSelected(prefix)"
-                @change="toggleGroup(prefix)"
+              type="checkbox"
+              :checked="isGroupSelected(prefix)"
+              @change="toggleGroup(prefix)"
             />
-            <b class="ms-2">{{ prefix }}</b>
+            <b class="ms-2">
+            {{ prefix }}
+            <span v-if="Object.keys(formsInGroup).some(k => k.startsWith(prefix))">*</span>
+            </b>
             <span class="ms-2 text-secondary small">
-                ({{ countSelected(prefix) }}/{{ group.length }})
+              ({{ countSelected(prefix) }}/{{ group.length }})
             </span>
-            </div>
+          </div>
 
-            <ul v-show="expanded[prefix]" class="ms-4">
+          <ul v-show="expanded[prefix]" class="ms-4">
             <li v-for="sf in group" :key="sf.sourceForm">
-                <input
+              <input
                 type="checkbox"
                 v-model="selectedFormsText"
                 :value="sf.sourceForm"
-                />
-                {{ sf.sourceForm }}
-                <span v-if="sf.inGroup" class="text-muted small ms-2">
-                [{{ sf.inGroup }}]
-                </span>
-            </li>
-            </ul>
-        </li>
-        </ul>
+              />
+              {{ sf.sourceForm }} 
+            <span v-if="formsInGroup[sf.sourceForm]">
+            <b>Exist in:</b>
+            {{ formsInGroup[sf.sourceForm].join(', ') }}
+            </span>
 
-    <div class="row mb-2">
-    <div class="col-sm-5">
-      <button class="btn btn-outline-primary mt-3" @click="confirmSelection">
-        Select
-      </button>
-      </div>
+              <span v-if="sf.inGroup" class="text-muted small ms-2">
+                [{{ sf.inGroup }}]
+              </span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="row mb-2">
+        <div class="col-sm-5">
+          <button
+            class="btn btn-outline-primary mt-3"
+            @click="confirmSelection"
+          >
+            Select
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -96,19 +118,22 @@ export default {
       expanded: {},
       selectedFormsText: [],
       selectedForms: [],
+      formsInGroup: {}
     };
   },
   async mounted() {
-    this.id = this.$route.params.id
-    if (this.id=='new') {
-        this.getSourceForm();
-        this.if = ''
-        this.title = 'Create new source form group'
+    this.id = this.$route.params.id;
+    if (this.id == "new") {
+      this.getSourceForm();
+      this.getSourceFormInGroup()
+      this.if = "";
+      this.title = "Create new source form group";
     } else {
-          this.getSourceForm().then(() => {
-            this.$nextTick(() => this.getSourceFormGroup(this.id));
-        });
-        this.title = 'Edit source form group'
+      this.getSourceForm().then(() => {
+        this.$nextTick(() => this.getSourceFormGroup(this.id));
+      });
+      this.getSourceFormInGroup(this.id)
+      this.title = "Edit source form group";
     }
   },
   methods: {
@@ -135,33 +160,33 @@ export default {
       }, {});
     },
     async getSourceFormGroup(name) {
-    const url = "/api/web/sourceformgroup/" + name;
-    const res = await fetch(url, {
+      const url = "/api/web/sourceformgroup/" + name;
+      const res = await fetch(url, {
         headers: {
-        Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+          Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
-    });
-    const data = await res.json();
+      });
+      const data = await res.json();
 
-    const list = Array.isArray(data) ? data : data.data || [];
+      const list = Array.isArray(data) ? data : data.data || [];
 
-    if (list.length === 0) return;
+      if (list.length === 0) return;
 
-    this.groupName = list[0].groupCode;
+      this.groupName = list[0].groupCode;
 
-    this.selectedFormsText = list.map((x) => x.sourceForm);
+      this.selectedFormsText = list.map((x) => x.sourceForm);
 
-    this.selectedForms = this.sourceForms.filter((sf) =>
+      this.selectedForms = this.sourceForms.filter((sf) =>
         this.selectedFormsText.includes(sf.sourceForm)
-    );
+      );
 
-    for (const prefix in this.groupedForms) {
+      for (const prefix in this.groupedForms) {
         this.groupedForms[prefix].forEach((sf) => {
-        sf.inGroup = this.selectedFormsText.includes(sf.sourceForm)
+          sf.inGroup = this.selectedFormsText.includes(sf.sourceForm)
             ? this.groupName
             : sf.inGroup || null;
         });
-    }
+      }
     },
 
     toggle(prefix) {
@@ -204,13 +229,23 @@ export default {
       this.showTree = false;
     },
     goBack() {
-    this.$router.back();
+      this.$router.back();
     },
     removeForm(index) {
       const removed = this.selectedForms.splice(index, 1)[0];
       this.selectedFormsText = this.selectedFormsText.filter(
         (sf) => sf !== removed.sourceForm
       );
+    },
+     async getSourceFormInGroup(name) {
+      const url = "/api/web/sourceform/ingroups/" + name;
+      const res = await fetch(url, {
+        headers: {
+          Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+        },
+      });
+      this.formsInGroup = await res.json();
+
     },
     async saveGroup() {
       if (!this.groupName.trim()) {
@@ -222,38 +257,41 @@ export default {
         alert("Please select at least one SourceForm!");
         return;
       }
-    if (this.id !== 'new') {
+      if (this.id !== "new") {
         const deleteUrl = "/api/web/sourceformgroup/" + this.id;
 
         try {
-        const delRes = await fetch(deleteUrl, {
+          const delRes = await fetch(deleteUrl, {
             method: "DELETE",
             headers: {
-            Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+              Authorization: "Bearer " + this.$store.getters.serverAccessToken,
             },
-        });
+          });
 
-        if (!delRes.ok) {
+          if (!delRes.ok) {
             const errText = await delRes.text();
             console.error("Delete failed:", errText);
             alert("Error deleting old group!");
             return;
-        }
-        console.log("Old group deleted successfully");
+          }
+          console.log("Old group deleted successfully");
         } catch (e) {
-        console.error("Delete request failed:", e);
-        alert("Failed to delete the existing group.");
-        return;
+          console.error("Delete request failed:", e);
+          alert("Failed to delete the existing group.");
+          return;
         }
-    }
+      }
       const payload = {
         groupCode: this.groupName,
-        sourceForm: this.selectedForms.map((sf) => sf.sourceForm), 
+        sourceForm: this.selectedForms.map((sf) => sf.sourceForm),
       };
 
       const res = await fetch("/api/web/sourceformgroup", {
         method: "POST",
-        headers: { "Content-Type": "application/json",  Authorization: "Bearer " + this.$store.getters.serverAccessToken,},
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+        },
         body: JSON.stringify(payload),
       });
 
@@ -290,7 +328,7 @@ button.btn-sm {
 
 .selected-list .item-row {
   display: grid;
-  grid-template-columns: 150px auto; 
+  grid-template-columns: 150px auto;
   align-items: center;
   list-style: none;
   padding: 4px 0;
@@ -303,5 +341,4 @@ button.btn-sm {
 .delete-btn {
   justify-self: start;
 }
-
 </style>
