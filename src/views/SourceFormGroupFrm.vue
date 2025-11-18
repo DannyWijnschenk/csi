@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     async getSourceForm() {
-      const url = "/api/web/sourceform";
+      const url = "/api/d2/sourceform";
       const res = await fetch(url, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -156,7 +156,7 @@ export default {
       }, {});
     },
     async getSourceFormGroup(name) {
-      const url = "/api/web/sourceformgroup/" + name;
+      const url = "/api/d2/sourceformgroup/" + name;
       const res = await fetch(url, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -234,7 +234,7 @@ export default {
       );
     },
      async getSourceFormInGroup(name) {
-      const url = "/api/web/sourceform/ingroups/" + name;
+      const url = "/api/d2/sourceform/ingroups/" + name;
       const res = await fetch(url, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -254,7 +254,7 @@ export default {
         return;
       }
       if (this.id !== "new") {
-        const deleteUrl = "/api/web/sourceformgroup/" + this.id;
+        const deleteUrl = "/api/d2/sourceformgroup/" + this.id;
 
         try {
           const delRes = await fetch(deleteUrl, {
@@ -282,7 +282,7 @@ export default {
         sourceForm: this.selectedForms.map((sf) => sf.sourceForm),
       };
 
-      const res = await fetch("/api/web/sourceformgroup", {
+      const res = await fetch("/api/d2/sourceformgroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -313,7 +313,7 @@ button.btn-sm {
 
 .outer-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px 24px;
   padding-left: 0;
 }
