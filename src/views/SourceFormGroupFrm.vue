@@ -1,71 +1,68 @@
 <template>
   <div class="group-editor">
-    <div class="card p-4">
+    <div class="card p-4 mt-2">
       <h3>Group</h3>
       <input
         v-model="groupName"
         type="text"
         class="form-control mb-3"
         placeholder="Enter group name"
+        style="max-width: 300px"
       />
-
-      <h4>SourceForms</h4>
-
-      <div v-if="selectedForms.length === 0" class="text-muted">
-        No SourceForms selected
-      </div>
-      <ul v-else class="selected-list">
-        <li
-          v-for="(sf, index) in selectedForms"
-          :key="sf.sourceForm"
-          class="item-row"
-        >
-          <span class="item-text">{{ sf.sourceForm }}</span>
-          <button
-            class="btn btn-sm btn-outline-danger delete-btn"
-            @click="removeForm(index)"
-          >
-            Delete
-          </button>
-        </li>
-      </ul>
-
       <div class="row mb-2">
         <div class="col-sm-5">
           <button
             type="button"
             class="btn btn-outline-primary"
-            v-on:click="saveGroup()"
+            @click="saveGroup"
           >
-            Save Group</button
-          >&nbsp;
+            Save Group
+          </button>
+          &nbsp;
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            @click="deleteGroup"
+          >
+            Delete
+          </button>
+          &nbsp;
           <button
             type="button"
             class="btn btn-outline-secondary"
-            v-on:click="goBack()"
+            @click="goBack"
           >
-            Back</button
-          >&nbsp;
+            Back
+          </button>
+          &nbsp;
         </div>
       </div>
     </div>
 
-    <div v-if="showTree" class="tree-container card mt-4 p-3">
+    <div v-if="showTree" class="tree-container card mt-2 p-3">
       <h4>Select SourceForms</h4>
+
       <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in groupedForms" :key="prefix">
           <div class="d-flex align-items-center">
             <button class="btn btn-sm" @click="toggle(prefix)">
               {{ expanded[prefix] ? "[-]" : "[+]" }}
             </button>
+
             <input
               type="checkbox"
               :checked="isGroupSelected(prefix)"
               @change="toggleGroup(prefix)"
             />
+
             <b class="ms-2">
-            {{ prefix }}
-            <span v-if="Object.keys(formsInGroup).some(k => k.startsWith(prefix))">*</span>
+              {{ prefix }}
+              <span
+                v-if="
+                  Object.keys(formsInGroup).some((k) => k.startsWith(prefix))
+                "
+                >*</span
+              >
             </b>
             <span class="ms-2 text-secondary small">
               ({{ countSelected(prefix) }}/{{ group.length }})
@@ -79,11 +76,12 @@
                 v-model="selectedFormsText"
                 :value="sf.sourceForm"
               />
-              {{ sf.sourceForm }} 
-            <span v-if="formsInGroup[sf.sourceForm]">
-            <b>Exist in:</b>
-            {{ formsInGroup[sf.sourceForm].join(', ') }}
-            </span>
+              {{ sf.sourceForm }}
+
+              <span v-if="formsInGroup[sf.sourceForm]">
+                <b>Exist in:</b>
+                {{ formsInGroup[sf.sourceForm].join(", ") }}
+              </span>
             </li>
           </ul>
         </li>
@@ -92,11 +90,29 @@
       <div class="row mb-2">
         <div class="col-sm-5">
           <button
-            class="btn btn-outline-primary mt-3"
-            @click="confirmSelection"
+            type="button"
+            class="btn btn-outline-primary"
+            @click="saveGroup"
           >
-            Select
+            Save Group
           </button>
+          &nbsp;
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            @click="deleteGroup"
+          >
+            Delete
+          </button>
+          &nbsp;
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            @click="goBack"
+          >
+            Back
+          </button>
+          &nbsp;
         </div>
       </div>
     </div>
@@ -107,31 +123,38 @@
 export default {
   data() {
     return {
+      id: null,
       groupName: "",
       showTree: true,
       sourceForms: [],
       groupedForms: {},
       expanded: {},
       selectedFormsText: [],
-      selectedForms: [],
-      formsInGroup: {}
+      formsInGroup: {},
     };
   },
+
   async mounted() {
     this.id = this.$route.params.id;
-    if (this.id == "new") {
-      this.getSourceForm();
-      this.getSourceFormInGroup()
-      this.if = "";
-      this.title = "Create new source form group";
+
+    if (this.id === "new") {
+      await this.getSourceForm();
+      await this.getSourceFormInGroup();
     } else {
-      this.getSourceForm().then(() => {
-        this.$nextTick(() => this.getSourceFormGroup(this.id));
-      });
-      this.getSourceFormInGroup(this.id)
-      this.title = "Edit source form group";
+      await this.getSourceForm();
+      await this.getSourceFormGroup(this.id);
+      await this.getSourceFormInGroup(this.id);
     }
   },
+
+  computed: {
+    selectedForms() {
+      return this.sourceForms.filter(sf =>
+        this.selectedFormsText.includes(sf.sourceForm)
+      );
+    }
+},
+
   methods: {
     async getSourceForm() {
       const url = "/api/d2/sourceform";
@@ -142,57 +165,51 @@ export default {
       });
       const data = await res.json();
       const list = Array.isArray(data) ? data : data.data || [];
+
       this.sourceForms = list;
 
       this.groupedForms = list.reduce((acc, sf) => {
         const match = sf.sourceForm.match(/^[A-Z]+/);
         const prefix = match ? match[0] : "UNKNOWN";
         if (!acc[prefix]) acc[prefix] = [];
-        acc[prefix].push({
-          ...sf,
-          inGroup: sf.inGroup || null,
-        });
+        acc[prefix].push(sf);
         return acc;
       }, {});
     },
+
     async getSourceFormGroup(name) {
-      const url = "/api/d2/sourceformgroup/" + name;
-      const res = await fetch(url, {
+      const res = await fetch("/api/d2/sourceformgroup/" + name, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
       });
       const data = await res.json();
-
       const list = Array.isArray(data) ? data : data.data || [];
-
       if (list.length === 0) return;
 
       this.groupName = list[0].groupCode;
-
       this.selectedFormsText = list.map((x) => x.sourceForm);
+    },
 
-      this.selectedForms = this.sourceForms.filter((sf) =>
-        this.selectedFormsText.includes(sf.sourceForm)
-      );
-
-      for (const prefix in this.groupedForms) {
-        this.groupedForms[prefix].forEach((sf) => {
-          sf.inGroup = this.selectedFormsText.includes(sf.sourceForm)
-            ? this.groupName
-            : sf.inGroup || null;
-        });
-      }
+    async getSourceFormInGroup(name) {
+      const res = await fetch("/api/d2/sourceform/ingroups/" + name, {
+        headers: {
+          Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+        },
+      });
+      this.formsInGroup = await res.json();
     },
 
     toggle(prefix) {
       this.expanded[prefix] = !this.expanded[prefix];
     },
+
     toggleGroup(prefix) {
       const group = this.groupedForms[prefix];
       const allSelected = group.every((sf) =>
         this.selectedFormsText.includes(sf.sourceForm)
       );
+
       if (allSelected) {
         this.selectedFormsText = this.selectedFormsText.filter(
           (sf) => !group.some((g) => g.sourceForm === sf)
@@ -205,6 +222,7 @@ export default {
         });
       }
     },
+
     isGroupSelected(prefix) {
       const group = this.groupedForms[prefix];
       return (
@@ -212,38 +230,43 @@ export default {
         group.every((sf) => this.selectedFormsText.includes(sf.sourceForm))
       );
     },
+
     countSelected(prefix) {
-      const group = this.groupedForms[prefix];
-      return group.filter((sf) =>
+      return this.groupedForms[prefix].filter((sf) =>
         this.selectedFormsText.includes(sf.sourceForm)
       ).length;
     },
-    confirmSelection() {
-      this.selectedForms = this.sourceForms.filter((sf) =>
-        this.selectedFormsText.includes(sf.sourceForm)
-      );
-      this.showTree = false;
-    },
+
+  removeForm(index) {
+    const removed = this.selectedForms[index];
+    this.selectedFormsText = this.selectedFormsText.filter(
+      sf => sf !== removed.sourceForm
+    );
+  },
+
+
     goBack() {
       this.$router.back();
     },
-    removeForm(index) {
-      const removed = this.selectedForms.splice(index, 1)[0];
-      this.selectedFormsText = this.selectedFormsText.filter(
-        (sf) => sf !== removed.sourceForm
-      );
-    },
-     async getSourceFormInGroup(name) {
-      const url = "/api/d2/sourceform/ingroups/" + name;
-      const res = await fetch(url, {
+
+    async deleteGroup() {
+      const delRes = await fetch("/api/d2/sourceformgroup/" + this.id, {
+        method: "DELETE",
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
       });
-      this.formsInGroup = await res.json();
 
+      if (!delRes.ok) {
+        this.$toast.error("Not deleted");
+        return;
+      } else {
+        this.goBack();
+      }
     },
+
     async saveGroup() {
+      await this.$nextTick();
       if (!this.groupName.trim()) {
         alert("Please enter a group name!");
         return;
@@ -253,36 +276,27 @@ export default {
         alert("Please select at least one SourceForm!");
         return;
       }
+
       if (this.id !== "new") {
-        const deleteUrl = "/api/d2/sourceformgroup/" + this.id;
+        const delRes = await fetch("/api/d2/sourceformgroup/" + this.id, {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+          },
+        });
 
-        try {
-          const delRes = await fetch(deleteUrl, {
-            method: "DELETE",
-            headers: {
-              Authorization: "Bearer " + this.$store.getters.serverAccessToken,
-            },
-          });
-
-          if (!delRes.ok) {
-            const errText = await delRes.text();
-            console.error("Delete failed:", errText);
-            alert("Error deleting old group!");
-            return;
-          }
-          console.log("Old group deleted successfully");
-        } catch (e) {
-          console.error("Delete request failed:", e);
-          alert("Failed to delete the existing group.");
+        if (!delRes.ok) {
+          this.$toast.error("Not Saved");
           return;
         }
       }
+
       const payload = {
         groupCode: this.groupName,
-        sourceForm: this.selectedForms.map((sf) => sf.sourceForm),
+        sourceForm: this.selectedFormsText,
       };
 
-      const res = await fetch("/api/d2/sourceformgroup", {
+      await fetch("/api/d2/sourceformgroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -291,9 +305,7 @@ export default {
         body: JSON.stringify(payload),
       });
 
-      const result = await res.json();
-      console.log(result);
-      alert("Group saved successfully!");
+      this.$toast.success("Saved");
     },
   },
 };
