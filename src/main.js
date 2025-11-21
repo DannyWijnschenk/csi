@@ -2,6 +2,7 @@ import { createApp } from 'vue';
 import { createStore } from 'vuex';
 import App from './App.vue';
 import router from './router';
+import modalPlugin from '../src/plugins/modalPlugin.js'
 
 ///https://vue3datepicker.com/
 ///npm install @vuepic/vue-datepicker
@@ -225,5 +226,6 @@ app.use(store);
 app.use(Toaster);
 app.use(VueSidebarMenu);
 app.use(ConfirmDialog);
+app.use(modalPlugin)
 app.mount('#app');
 

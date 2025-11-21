@@ -1,14 +1,26 @@
 <template>
   <div class="group-editor">
     <div class="card p-4 mt-2">
-      <h3>Group</h3>
-      <input
-        v-model="groupName"
-        type="text"
-        class="form-control mb-3"
-        placeholder="Enter group name"
-        style="max-width: 300px"
-      />
+      <h3>SourceFormGroup</h3>
+      <div class="d-flex align-items-center justify-content-between mb-3 w-100">
+        <input
+          v-model="groupName"
+          type="text"
+          class="form-control"
+          placeholder="Enter group name"
+          style="max-width: 300px"
+        />
+
+        <div class="ms-3 text-end" style="white-space: nowrap">
+          <div>
+            Total count: <strong>{{ this.totalSizeCount.totalCount }}</strong>
+          </div>
+          <div>
+            Total size: <strong>{{ this.totalSizeCount.totalSize }}</strong>
+          </div>
+        </div>
+      </div>
+
       <div class="row mb-2">
         <div class="col-sm-5">
           <button
@@ -40,10 +52,35 @@
     </div>
 
     <div v-if="showTree" class="tree-container card mt-2 p-3">
-      <h4>Select SourceForms</h4>
+      <div class="d-flex align-items-center justify-content-between mb-3 w-100">
+        <h4 class="mb-0">Select SourceForms</h4>
+
+        <div class="d-flex gap-3">
+          <label class="d-flex align-items-center mb-0">
+            <input
+              type="checkbox"
+              class="me-2"
+              value="usedInGroup"
+              @change="checkboxChanged"
+            />
+            Not used in other groups
+          </label>
+
+          <label class="d-flex align-items-center mb-0">
+            <input
+              type="checkbox"
+              class="me-2"
+              value="usedSince"
+              @change="checkboxChanged"
+            />
+            Used since
+          </label>
+        </div>
+      </div>
 
       <ul class="ms-4 outer-grid">
-        <li v-for="(group, prefix) in groupedForms" :key="prefix">
+        <li v-for="(group, prefix) in filteredGroupedForms" :key="prefix">
+
           <div class="d-flex align-items-center">
             <button class="btn btn-sm" @click="toggle(prefix)">
               {{ expanded[prefix] ? "[-]" : "[+]" }}
@@ -75,6 +112,7 @@
                 type="checkbox"
                 v-model="selectedFormsText"
                 :value="sf.sourceForm"
+                @change="getSourceFormCount"
               />
               {{ sf.sourceForm }}
 
@@ -131,6 +169,8 @@ export default {
       expanded: {},
       selectedFormsText: [],
       formsInGroup: {},
+      totalSizeCount: { totalCount: 0, totalSize: 0 },
+      checkboxControl: { usedInGroup: false, usedSince: false },
     };
   },
 
@@ -144,18 +184,44 @@ export default {
       await this.getSourceForm();
       await this.getSourceFormGroup(this.id);
       await this.getSourceFormInGroup(this.id);
+      await this.getSourceFormCount();
     }
   },
 
   computed: {
     selectedForms() {
-      return this.sourceForms.filter(sf =>
+      return this.sourceForms.filter((sf) =>
         this.selectedFormsText.includes(sf.sourceForm)
       );
-    }
-},
+    },
+      filteredGroupedForms() {
+    return Object.fromEntries(
+      Object.entries(this.groupedForms).filter(([prefix]) => {
+        const existsInGroup =
+          Object.keys(this.formsInGroup).some(k => k.startsWith(prefix));
+
+        return !(
+          existsInGroup &&
+          this.checkboxControl.usedInGroup
+        );
+      })
+    );
+  }
+  },
 
   methods: {
+    checkboxChanged(event) {
+      const isChecked = event.target.checked;
+      const checkType = event.target.value;
+
+      if (isChecked) {
+        this.checkboxControl[checkType] = true;
+      } else {
+        this.checkboxControl[checkType] = false;
+      }
+
+      console.log("Selected:", this.checkboxControl);
+    },
     async getSourceForm() {
       const url = "/api/d2/sourceform";
       const res = await fetch(url, {
@@ -204,7 +270,7 @@ export default {
       this.expanded[prefix] = !this.expanded[prefix];
     },
 
-    toggleGroup(prefix) {
+    async toggleGroup(prefix) {
       const group = this.groupedForms[prefix];
       const allSelected = group.every((sf) =>
         this.selectedFormsText.includes(sf.sourceForm)
@@ -221,6 +287,7 @@ export default {
           }
         });
       }
+      await this.getSourceFormCount();
     },
 
     isGroupSelected(prefix) {
@@ -237,32 +304,58 @@ export default {
       ).length;
     },
 
-  removeForm(index) {
-    const removed = this.selectedForms[index];
-    this.selectedFormsText = this.selectedFormsText.filter(
-      sf => sf !== removed.sourceForm
-    );
-  },
-
+    removeForm(index) {
+      const removed = this.selectedForms[index];
+      this.selectedFormsText = this.selectedFormsText.filter(
+        (sf) => sf !== removed.sourceForm
+      );
+    },
 
     goBack() {
       this.$router.back();
     },
 
     async deleteGroup() {
-      const delRes = await fetch("/api/d2/sourceformgroup/" + this.id, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + this.$store.getters.serverAccessToken,
-        },
+      const ok = await this.$confirm({
+        title: "Delete group",
+        body: "Do you want delete this group?",
+        confirmText: "Yes",
+        cancelText: "No",
       });
 
-      if (!delRes.ok) {
-        this.$toast.error("Not deleted");
-        return;
-      } else {
-        this.goBack();
+      if (ok) {
+        const delRes = await fetch("/api/d2/sourceformgroup/" + this.id, {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+          },
+        });
+
+        if (!delRes.ok) {
+          this.$toast.error("Not deleted");
+          return;
+        } else {
+          this.goBack();
+        }
       }
+    },
+    async getSourceFormCount() {
+      await this.$nextTick();
+
+      const payload = {
+        sourceForms: this.selectedFormsText,
+      };
+
+      const res = await fetch("/api/d2/sourceform/sizecount", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + this.$store.getters.serverAccessToken,
+        },
+        body: JSON.stringify(payload),
+      });
+      this.totalSizeCount = await res.json();
+      console.log(this.totalSizeCount);
     },
 
     async saveGroup() {
