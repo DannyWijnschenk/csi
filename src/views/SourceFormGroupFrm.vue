@@ -80,7 +80,6 @@
 
       <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in filteredGroupedForms" :key="prefix">
-
           <div class="d-flex align-items-center">
             <button class="btn btn-sm" @click="toggle(prefix)">
               {{ expanded[prefix] ? "[-]" : "[+]" }}
@@ -194,19 +193,17 @@ export default {
         this.selectedFormsText.includes(sf.sourceForm)
       );
     },
-      filteredGroupedForms() {
-    return Object.fromEntries(
-      Object.entries(this.groupedForms).filter(([prefix]) => {
-        const existsInGroup =
-          Object.keys(this.formsInGroup).some(k => k.startsWith(prefix));
+    filteredGroupedForms() {
+      return Object.fromEntries(
+        Object.entries(this.groupedForms).filter(([prefix]) => {
+          const existsInGroup = Object.keys(this.formsInGroup).some((k) =>
+            k.startsWith(prefix)
+          );
 
-        return !(
-          existsInGroup &&
-          this.checkboxControl.usedInGroup
-        );
-      })
-    );
-  }
+          return !(existsInGroup && this.checkboxControl.usedInGroup);
+        })
+      );
+    },
   },
 
   methods: {
