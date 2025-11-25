@@ -161,7 +161,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 
-const baseUrl = "/api/d2/table";
+const baseUrl = this.$store.getters.serverUrl+"/d2/table";
 
 const tables = ref([]);
 const criteria = ref("");

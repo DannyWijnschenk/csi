@@ -117,9 +117,9 @@
           this.resultKey = ''
         }
         if (selection===undefined) {
-          url = "/api/web/grid/"+this.table+ "?selection="
+          url = this.$store.getters.serverUrl+"/csi/grid/"+this.table+ "?selection="
         } else {
-          url = "/api/web/grid/" + this.table + "?selection=" + selection
+          url = this.$store.getters.serverUrl+"/csi/grid/" + this.table + "?selection=" + selection
           if (selection != this.selection) {
             //new selection : we need a new query !
             this.resultKey = '';  //todo : purge the old results, or we need a param to invalidate the results and run the query again
@@ -135,7 +135,7 @@
           url = url + "&pageSize=" + pageSize;
         }
         this.selection = selection;
-        this.baseUrl=this.server + "/v1/grid/" + this.table 
+        this.baseUrl=this.server + "/csi/grid/" + this.table 
         this.doFetch(url)
       },
       doFetch(url) {
@@ -176,11 +176,11 @@
           });
       },
       nextPage() {
-        var url = "/api/web/v1/grid/"+this.table + this.pagination.nextPageLink;
+        var url = this.$store.getters.serverUrl+"/csi/v1/grid/"+this.table + this.pagination.nextPageLink;
         this.doFetch(url);
       },
       prevPage() {
-        var url = "/api/web/v1/grid/"+this.table + this.pagination.previousPageLink;
+        var url = this.$store.getters.serverUrl+"/csi/v1/grid/"+this.table + this.pagination.previousPageLink;
         this.doFetch(url);
       },
       sort() {

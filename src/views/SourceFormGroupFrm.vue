@@ -220,7 +220,7 @@ export default {
       console.log("Selected:", this.checkboxControl);
     },
     async getSourceForm() {
-      const url = "/api/d2/sourceform";
+      const url = this.$store.getters.serverUrl+"/d2/sourceform";
       const res = await fetch(url, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -241,7 +241,7 @@ export default {
     },
 
     async getSourceFormGroup(name) {
-      const res = await fetch("/api/d2/sourceformgroup/" + name, {
+      const res = await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup/" + name, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
@@ -255,7 +255,7 @@ export default {
     },
 
     async getSourceFormInGroup(name) {
-      const res = await fetch("/api/d2/sourceform/ingroups/" + name, {
+      const res = await fetch(this.$store.getters.serverUrl+"/d2/sourceform/ingroups/" + name, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
@@ -321,7 +321,7 @@ export default {
       });
 
       if (ok) {
-        const delRes = await fetch("/api/d2/sourceformgroup/" + this.id, {
+        const delRes = await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup/" + this.id, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -343,7 +343,7 @@ export default {
         sourceForms: this.selectedFormsText,
       };
 
-      const res = await fetch("/api/d2/sourceform/sizecount", {
+      const res = await fetch(this.$store.getters.serverUrl+"/d2/sourceform/sizecount", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -368,7 +368,7 @@ export default {
       }
 
       if (this.id !== "new") {
-        const delRes = await fetch("/api/d2/sourceformgroup/" + this.id, {
+        const delRes = await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup/" + this.id, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -386,7 +386,7 @@ export default {
         sourceForm: this.selectedFormsText,
       };
 
-      await fetch("/api/d2/sourceformgroup", {
+      await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

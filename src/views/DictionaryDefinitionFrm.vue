@@ -158,7 +158,7 @@
         this.$refs.login.refresh(this.saveDataCB);
       },
       saveDataCB() {
-        var url = "/api/web/dictionaryedit/";
+        var url = this.$store.getters.serverUrl+"/csi/dictionaryedit/";
         var method = ""  
         if (this.form.id == '') {
             method = "POST";
@@ -189,7 +189,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = "/api/web/dictionaryedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/dictionaryedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -220,7 +220,7 @@
         }
       },
       removeDataCB() {
-        var url = "/api/web/dictionaryedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/dictionaryedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

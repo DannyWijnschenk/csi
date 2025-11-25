@@ -129,10 +129,10 @@
         var url = ""
         var method = ""  
         if (this.form.id == '') {
-            url = "/api/web/metafield";
+            url = this.$store.getters.serverUrl+"/csi/metafield";
             method = "POST";
         } else {
-            url = "/api/web/metafield/" + this.form.id;
+            url = this.$store.getters.serverUrl+"/csi/metafield/" + this.form.id;
             method = "PUT";
         }
         var body = this.form
@@ -158,7 +158,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = "/api/web/metafield/"+this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/metafield/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -174,7 +174,7 @@
         this.$refs.login.refresh(this.removeDataCB);
       },
       removeDataCB() {
-        var url = "/api/web/metafield/"+this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/metafield/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"

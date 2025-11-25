@@ -231,7 +231,7 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 
-const baseUrl = "/api/d2/definition";
+const baseUrl = this.$store.getters.serverUrl+"/d2/definition";
 
 async function getDomainDefinitions(page = 1) {
   const res = await fetch(`${baseUrl}?page=${page}`);

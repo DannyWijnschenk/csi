@@ -289,7 +289,7 @@
         this.$refs.login.refresh(this.saveDataCB);
       },
       saveDataCB() {
-        var url = "/api/web/datafieldedit/"
+        var url = this.$store.getters.serverUrl+"/csi/datafieldedit/"
         var method = ""  
         if (this.form.id == '') {
             method = "POST";
@@ -317,7 +317,7 @@
         });
       }, 
       fetchOperatorOptions() {
-        const url = "/api/web/fieldoperator";
+        const url = this.$store.getters.serverUrl+"/csi/fieldoperator";
 
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
@@ -333,7 +333,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = "/api/web/datafieldedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/datafieldedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -364,7 +364,7 @@
         }
       },
       removeDataCB() {
-        var url = "/api/web/datafieldedit/"+this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/datafieldedit/"+this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "DELETE"
