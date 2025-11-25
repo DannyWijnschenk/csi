@@ -16,7 +16,7 @@
             Total count: <strong>{{ this.totalSizeCount.totalCount }}</strong>
           </div>
           <div>
-            Total size: <strong>{{ this.totalSizeCount.totalSize }}</strong>
+            Total size: <strong>{{ Number((this.totalSizeCount.totalSize / 1024).toFixed(2))}} Gb</strong>
           </div>
         </div>
       </div>
@@ -66,12 +66,12 @@
             Not used in other groups
           </label>
 
-          <label class="d-flex align-items-center mb-0">
+          <label class="d-flex align-items-center mb-0 text-nowrap">
             <input
-              type="checkbox"
-              class="me-2"
-              value="usedSince"
-              @change="checkboxChanged"
+              type="date"
+              class="form-control form-control-sm me-2"
+              v-model="usedSince"
+              @change="usedSinceChanged"
             />
             Used since
           </label>
