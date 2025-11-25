@@ -182,10 +182,10 @@
       saveDataCB() {
         var url, method
         if (this.form.id == '') {
-          url = "/api/web/ric/unittest/scenario/" + this.scenarioId + "/part";
+          url = this.$store.getters.serverUrl+"/csi/ric/unittest/scenario/" + this.scenarioId + "/part";
           method = "POST";
         } else {
-          url = "/api/web/ric/unittest/scenario/" + this.scenarioId + "/part/" + this.form.id;
+          url = this.$store.getters.serverUrl+"/csi/ric/unittest/scenario/" + this.scenarioId + "/part/" + this.form.id;
           method = "PUT";
         }
         fetch(url, {
@@ -220,7 +220,7 @@
       },
       deleteDataCB() {
         var url, method
-        url = "/api/web/ric/unittest/scenario/" + this.scenarioId + "/part/" + this.form.id;
+        url = this.$store.getters.serverUrl+"/csi/ric/unittest/scenario/" + this.scenarioId + "/part/" + this.form.id;
         method = "DELETE";
         fetch(url, {
             "headers": { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
@@ -241,7 +241,7 @@
         this.$refs.login.refresh(this.getDataCB);
       },
       getDataCB() {
-        var url = "/api/web/ric/unittest/scenario/"+this.scenarioId + "/part/" + this.form.id;
+        var url = this.$store.getters.serverUrl+"/csi/ric/unittest/scenario/"+this.scenarioId + "/part/" + this.form.id;
         fetch(url, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
@@ -260,7 +260,7 @@
         this.$refs.login.refresh(this.getCatalogCB);
       },
       getCatalogCB() {
-        fetch("/api/web/ric/unittest/catalog/" + this.form.catalogId, {
+        fetch(this.$store.getters.serverUrl+"/csi/ric/unittest/catalog/" + this.form.catalogId, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
         }).then(response => {
@@ -282,7 +282,7 @@
         this.$refs.login.refresh(this.getScenarioDefaultCategoryCB);
       },
       getScenarioDefaultCategoryCB() {
-        fetch("/api/web/ric/unittest/scenario/" + this.scenarioId, {
+        fetch(this.$store.getters.serverUrl+"/csi/ric/unittest/scenario/" + this.scenarioId, {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
         }).then(response => {
@@ -294,7 +294,7 @@
         });
       },
       getHttpStatus() {
-        fetch("/api/web/ric/unittest/httpstatus", {
+        fetch(this.$store.getters.serverUrl+"/csi/ric/unittest/httpstatus", {
           "headers" : { "Authorization": 'Bearer ' + this.$store.getters.serverAccessToken },
           "method": "GET"
         }).then(response => {

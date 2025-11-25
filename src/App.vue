@@ -159,40 +159,30 @@ export default {
     console.log("app is mounted");
     var path = location.pathname;
     console.log('pathname', path);
-    console.log('location',location)
+    console.log('location', location)
     var pathArray = path.split('/');
-    var namespace = 'csi' //default namespace when app is started in development mode
+    var namespace = 'csi'; //default namespace when app is started in development mode
+    var url = '';
     //look if query params contain a namespace name for rest calls
-    var searchArray = location.search.split('&')
-    for (var iSearch = 0; iSearch < searchArray.length; iSearch++) {
-      if ((searchArray[iSearch].substring(0, 3) == 'ns=') || (searchArray[iSearch].substring(0, 4) == '?ns=')) {
-        namespace = searchArray[iSearch].split('=')[1]
-        console.log('switch rest to ',namespace)
-      }
-    }
-    for (var i=0;i<pathArray.length;i++) {
-      if (pathArray[i].substring(0,6)=='uzgent') {  //development local server Ivan
-        namespace = pathArray[i].substring(0,6);
-        break;
-      }
-      if (pathArray[i].substring(0,5)=='winfo') {  //development local server Danny
-        namespace = pathArray[i].substring(0,5);
-        break;
-      }
-    }
+    //http(s):// <domain> / csp / <namespace> / CSI.csp...
+    //http://localhost:8080
+    //http://localhost:57772/csp/nlp/CSI.csp#/Login
+    //http://localhost:57772/csp/demo/CSI.csp#/Login
+    //http://4.210.244.11/csp/csi/CSI.csp#/Login
+    //http://spectre-hd-v01p.stluc.ucl.ac.be/iris/csp/csi/CSI.csp#/Login
+    //http://ec2-35-159-97-33.eu-central-1.compute.amazonaws.com/csp/csi/CSI.csp#/Login
 
-    var protocol = 'http';
-    var port = '';
-    var domain = document.domain;
-    var uri = '';
-    if ((namespace == 'uzgent') || (namespace == 'winfo') || (namespace == 'csi') || (namespace == 'demo')) {  //connect to localhost for local development server
-      protocol = 'http';
-      domain = '51.38.114.8';
-      uri = '/csp/'+namespace+'/'
+    if (location.host == 'localhost:8080') {
+      url = '/api';
+    } else {
+      for (var iPath = 0; iPath < pathArray.length; iPath++) {
+        if (pathArray[iPath].substring(0, 7) == 'CSI.csp') {
+          namespace = pathArray[iPath - 1]
+        }
+      }
+      url = location.protocol + '//' + location.host + '/csp/' + namespace + '/restapi';
     }
-    ///var url = location.protocol+"//"+document.domain+":"+port+"/api/clinicom/"+namespace
-    var url = protocol + '://' + domain + (port? ":": '') + port + uri + "restapi/csi"
-    console.log("environment",process.env.NODE_ENV)
+    console.log("environment", process.env.NODE_ENV)
     this.$store.dispatch('setServer',url);
     this.$store.dispatch('setSystem',namespace);
     console.log("server is set to ",url," system is ",namespace)
