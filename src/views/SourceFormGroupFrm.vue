@@ -100,7 +100,7 @@
               >
             </b>
             <span class="ms-2 text-secondary small">
-              ({{ countSelected(prefix) }}/{{ group.length }})
+              ({{ countSelected(prefix) }}/{{ filterByDate(group).length }})
             </span>
           </div>
 
@@ -235,9 +235,6 @@ export default {
 
       console.log("Selected:", this.checkboxControl);
     },
-    // usedSinceChanged(event) {
-
-    // },
     async getSourceForm() {
       const url = this.$store.getters.serverUrl+"/d2/sourceform";
       const res = await fetch(url, {
@@ -288,7 +285,7 @@ export default {
     },
 
     async toggleGroup(prefix) {
-      const group = this.groupedForms[prefix];
+      const group = this.filterByDate(this.groupedForms[prefix]);
       const allSelected = group.every((sf) =>
         this.selectedFormsText.includes(sf.sourceForm)
       );
