@@ -228,192 +228,213 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from "vue";
+<script>
+export default {
+  name: "DomainDefinitions",
 
-const baseUrl = this.$store.getters.serverUrl+"/d2/definition";
-
-async function getDomainDefinitions(page = 1) {
-  const res = await fetch(`${baseUrl}?page=${page}`);
-  if (!res.ok) throw new Error("Failed to load definitions");
-  return await res.json();
-}
-
-async function getDomainDefinition(id) {
-  const res = await fetch(baseUrl + "/" + id);
-  if (!res.ok) throw new Error("Failed to load definition");
-  return await res.json();
-}
-
-async function updateDomainDefinition(id, data) {
-  const res = await fetch(baseUrl + "/" + id, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error("Failed to save definition");
-  return;
-}
-
-async function deleteDomainDefinition(id) {
-  const res = await fetch(baseUrl + "/" + id, { method: "DELETE" });
-  if (!res.ok) throw new Error("Failed to delete definition");
-  return;
-}
-
-const domainDefinitions = ref([]);
-const criteria = ref("");
-const sortField = ref("");
-const reverse = ref(false);
-const showModal = ref(false);
-const domainDefinition = ref({});
-const modalTitle = ref("");
-let currentId = null;
-let page = 1;
-let isLoading = false;
-let hasMore = true;
-
-onMounted(() => {
-  loadDomains();
-});
-
-async function loadDomains() {
-  if (isLoading) return;
-  isLoading = true;
-
-  const data = await getDomainDefinitions(page);
-
-  if (!data.children || data.children.length === 0) {
-    hasMore = false;
-    domainDefinitions.value = [];
-  } else {
-    domainDefinitions.value = data.children;
-    hasMore = true;
-  }
-
-  isLoading = false;
-}
-
-async function nextPage() {
-  if (isLoading || !hasMore) return;
-  page++;
-  await loadDomains();
-}
-
-async function prevPage() {
-  if (page === 1) return;
-  page--;
-  hasMore = true;
-  await loadDomains();
-}
-
-function sort(field) {
-  if (sortField.value === field) reverse.value = !reverse.value;
-  else {
-    sortField.value = field;
-    reverse.value = false;
-  }
-}
-function sortIcon(field) {
-  if (sortField.value !== field) return "";
-  return reverse.value ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up";
-}
-
-const filteredDomains = computed(() => {
-  const filter = criteria.value.toLowerCase();
-  let list = domainDefinitions.value.filter((d) =>
-    Object.values(d).some((v) => String(v).toLowerCase().includes(filter))
-  );
-  if (sortField.value) {
-    list = list.sort((a, b) => {
-      const av = a[sortField.value] ?? "";
-      const bv = b[sortField.value] ?? "";
-      return reverse.value ? bv.localeCompare(av) : av.localeCompare(bv);
-    });
-  }
-  return list;
-});
-
-function truncated(text) {
-  return text?.length > 40 ? text.substring(0, 40) + "…" : text;
-}
-function toDate(str) {
-  if (!str) return "";
-  return new Date(
-    str.substr(6, 4),
-    str.substr(0, 2) - 1,
-    str.substr(3, 2)
-  ).toLocaleDateString();
-}
-function updateAction(code) {
-  return { 1: "Rebuild once", 2: "Update", 3: "Always Rebuild" }[code] || code;
-}
-
-function convertDate(dateStr) {
-  if (!dateStr) return "";
-  const parts = dateStr.split("/");
-  if (parts.length !== 3) return "";
-  const [mm, dd, yyyy] = parts;
-  return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
-}
-
-async function openModal(id) {
-  currentId = id;
-  showModal.value = true;
-  if (id && id !== "(new)") {
-    modalTitle.value = "Edit Domain Definition";
-    const data = await getDomainDefinition(id);
-    const def = data.children?.[0] ?? {};
-
-    def.IndexUntil = convertDate(def.IndexUntil);
-    def.Expires = convertDate(def.Expires);
-
-    domainDefinition.value = def;
-  } else {
-    modalTitle.value = "New Domain Definition";
-    domainDefinition.value = {
-      Name: "",
-      Description: "",
-      IndexRange: "",
-      NextUpdateAction: 1,
+  data() {
+    return {
+      domainDefinitions: [],
+      criteria: "",
+      sortField: "",
+      reverse: false,
+      showModal: false,
+      domainDefinition: {},
+      modalTitle: "",
+      currentId: null,
+      page: 1,
+      isLoading: false,
+      hasMore: true,
     };
-  }
-}
-function closeModal() {
-  showModal.value = false;
-}
-async function save() {
-  await updateDomainDefinition(currentId, domainDefinition.value);
-  showModal.value = false;
-  loadDomains();
-}
-async function remove() {
-  if (!currentId || currentId === "(new)") {
-    showModal.value = false;
-    return;
-  }
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this domain?"
-  );
-  if (!confirmed) {
-    return;
-  }
-  await deleteDomainDefinition(currentId);
-  showModal.value = false;
-  loadDomains();
-}
+  },
 
-function onFileChange(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = () => {
-    let text = reader.result.replace(/[\n\r]/g, ",").replace(/,,/g, ",");
-    domainDefinition.value.IndexRange = text;
-  };
-  reader.readAsText(file);
-}
+  computed: {
+    filteredDomains() {
+      const filter = this.criteria.toLowerCase();
+      let list = this.domainDefinitions.filter((d) =>
+        Object.values(d).some((v) => String(v).toLowerCase().includes(filter))
+      );
+      if (this.sortField) {
+        list = list.sort((a, b) => {
+          const av = a[this.sortField] ?? "";
+          const bv = b[this.sortField] ?? "";
+          return this.reverse ? bv.localeCompare(av) : av.localeCompare(bv);
+        });
+      }
+      return list;
+    },
+  },
+
+  mounted() {
+    this.loadDomains();
+  },
+
+  methods: {
+
+    async getDomainDefinitions(page = 1) {
+      const res = await fetch(`${this.$store.getters.serverUrl + "/d2/definition"}?page=${page}`);
+      if (!res.ok) throw new Error("Failed to load definitions");
+      return await res.json();
+    },
+
+    async getDomainDefinition(id) {
+      const res = await fetch(this.$store.getters.serverUrl + "/d2/definition/" + id);
+      if (!res.ok) throw new Error("Failed to load definition");
+      return await res.json();
+    },
+
+    async updateDomainDefinition(id, data) {
+      const res = await fetch(this.$store.getters.serverUrl + "/d2/definition/" + id, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to save definition");
+    },
+
+    async deleteDomainDefinition(id) {
+      const res = await fetch(this.$store.getters.serverUrl + "/d2/definition/" + id, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete definition");
+    },
+
+
+    async loadDomains() {
+      if (this.isLoading) return;
+      this.isLoading = true;
+
+      const data = await this.getDomainDefinitions(this.page);
+
+      if (!data.children || data.children.length === 0) {
+        this.hasMore = false;
+        this.domainDefinitions = [];
+      } else {
+        this.domainDefinitions = data.children;
+        this.hasMore = true;
+      }
+
+      this.isLoading = false;
+    },
+
+    async nextPage() {
+      if (this.isLoading || !this.hasMore) return;
+      this.page++;
+      await this.loadDomains();
+    },
+
+    async prevPage() {
+      if (this.page === 1) return;
+      this.page--;
+      this.hasMore = true;
+      await this.loadDomains();
+    },
+
+
+    sort(field) {
+      if (this.sortField === field) this.reverse = !this.reverse;
+      else {
+        this.sortField = field;
+        this.reverse = false;
+      }
+    },
+
+    sortIcon(field) {
+      if (this.sortField !== field) return "";
+      return this.reverse
+        ? "fa-solid fa-chevron-down"
+        : "fa-solid fa-chevron-up";
+    },
+
+
+    truncated(text) {
+      return text?.length > 40 ? text.substring(0, 40) + "…" : text;
+    },
+
+    toDate(str) {
+      if (!str) return "";
+      return new Date(
+        str.substr(6, 4),
+        str.substr(0, 2) - 1,
+        str.substr(3, 2)
+      ).toLocaleDateString();
+    },
+
+    updateAction(code) {
+      return { 1: "Rebuild once", 2: "Update", 3: "Always Rebuild" }[code] || code;
+    },
+
+    convertDate(dateStr) {
+      if (!dateStr) return "";
+      const parts = dateStr.split("/");
+      if (parts.length !== 3) return "";
+      const [mm, dd, yyyy] = parts;
+      return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+    },
+
+    async openModal(id) {
+      this.currentId = id;
+      this.showModal = true;
+
+      if (id && id !== "(new)") {
+        this.modalTitle = "Edit Domain Definition";
+        const data = await this.getDomainDefinition(id);
+        const def = data.children?.[0] ?? {};
+
+        def.IndexUntil = this.convertDate(def.IndexUntil);
+        def.Expires = this.convertDate(def.Expires);
+
+        this.domainDefinition = def;
+      } else {
+        this.modalTitle = "New Domain Definition";
+        this.domainDefinition = {
+          Name: "",
+          Description: "",
+          IndexRange: "",
+          NextUpdateAction: 1,
+        };
+      }
+    },
+
+    closeModal() {
+      this.showModal = false;
+    },
+
+    async save() {
+      await this.updateDomainDefinition(this.currentId, this.domainDefinition);
+      this.showModal = false;
+      this.loadDomains();
+    },
+
+    async remove() {
+      if (!this.currentId || this.currentId === "(new)") {
+        this.showModal = false;
+        return;
+      }
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this domain?"
+      );
+      if (!confirmed) return;
+
+      await this.deleteDomainDefinition(this.currentId);
+      this.showModal = false;
+      this.loadDomains();
+    },
+
+    onFileChange(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        let text = reader.result.replace(/[\n\r]/g, ",").replace(/,,/g, ",");
+        this.domainDefinition.IndexRange = text;
+      };
+      reader.readAsText(file);
+    },
+  },
+};
 </script>
+
 
 <style>
 .table th {

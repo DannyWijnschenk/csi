@@ -158,126 +158,154 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from "vue";
+<script>
+export default {
+  name: "TablesPage",
 
-const baseUrl = this.$store.getters.serverUrl+"/d2/table";
+  data() {
+    return {
+      baseUrl: this.$store.getters.serverUrl + "/d2/table",
 
-const tables = ref([]);
-const criteria = ref("");
-const sortField = ref("");
-const reverse = ref(false);
-const showModal = ref(false);
-const table = ref({});
-const datatypes = ["STRING", "DATE"];
-let currentId = null;
+      tables: [],
+      criteria: "",
+      sortField: "",
+      reverse: false,
 
-onMounted(() => {
-  loadTables();
-});
+      showModal: false,
+      table: {},
 
-async function loadTables() {
-  const res = await fetch(baseUrl);
-  if (!res.ok) {
-    console.error("Failed to load tables");
-    return;
-  }
-  tables.value = await res.json();
-}
+      datatypes: ["STRING", "DATE"],
 
-function sort(field) {
-  if (sortField.value === field) reverse.value = !reverse.value;
-  else {
-    sortField.value = field;
-    reverse.value = false;
-  }
-}
-function sortIcon(field) {
-  if (sortField.value !== field) return "";
-  return reverse.value ? "fa-solid fa-chevron-down" : "fa-solid fa-chevron-up";
-}
-
-const filteredTables = computed(() => {
-  const f = criteria.value.toLowerCase();
-  let list = tables.value.filter((t) =>
-    Object.values(t).some((v) => String(v).toLowerCase().includes(f))
-  );
-  if (sortField.value) {
-    list = list.sort((a, b) => {
-      const av = a[sortField.value] ?? "";
-      const bv = b[sortField.value] ?? "";
-      return reverse.value ? bv.localeCompare(av) : av.localeCompare(bv);
-    });
-  }
-  return list;
-});
-
-async function openModal(id) {
-  currentId = id;
-  showModal.value = true;
-  if (id && id !== "(new)") {
-    const res = await fetch(`${baseUrl}/${id}`);
-    if (res.ok) {
-      table.value = await res.json();
-    }
-  } else {
-    table.value = {
-      id: "(new)",
-      name: "",
-      textField: "",
-      metadata: [],
+      currentId: null,
     };
-  }
-}
+  },
 
-function closeModal() {
-  showModal.value = false;
-}
+  computed: {
+    filteredTables() {
+      const f = this.criteria.toLowerCase();
 
-async function save() {
-  const method = table.value.id === "(new)" ? "POST" : "POST";
-  const res = await fetch(`${baseUrl}/${table.value.id}`, {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(table.value),
-  });
-  if (!res.ok) {
-    alert("Error saving table");
-    return;
-  }
-  showModal.value = false;
-  loadTables();
-}
+      let list = this.tables.filter((t) =>
+        Object.values(t).some((v) => String(v).toLowerCase().includes(f))
+      );
 
-async function remove() {
-  if (!currentId || currentId === "(new)") return;
-  const confirmed = window.confirm(
-    "Are you sure you want to delete this table?"
-  );
-  if (!confirmed) return;
+      if (this.sortField) {
+        list = list.sort((a, b) => {
+          const av = a[this.sortField] ?? "";
+          const bv = b[this.sortField] ?? "";
+          return this.reverse ? bv.localeCompare(av) : av.localeCompare(bv);
+        });
+      }
+      return list;
+    },
+  },
 
-  const res = await fetch(`${baseUrl}/${currentId}`, { method: "DELETE" });
-  if (!res.ok) {
-    alert("Error deleting table");
-    return;
-  }
-  showModal.value = false;
-  loadTables();
-}
+  mounted() {
+    this.loadTables();
+  },
 
-function addMeta() {
-  table.value.metadata.push({
-    fieldName: "",
-    metadataName: "",
-    operators: "",
-    datatype: "STRING",
-    storeValues: false,
-  });
-}
-function deleteMeta(index) {
-  table.value.metadata.splice(index, 1);
-}
+  methods: {
+    async loadTables() {
+      const res = await fetch(this.baseUrl);
+      if (!res.ok) {
+        console.error("Failed to load tables");
+        return;
+      }
+      this.tables = await res.json();
+    },
+
+    sort(field) {
+      if (this.sortField === field) this.reverse = !this.reverse;
+      else {
+        this.sortField = field;
+        this.reverse = false;
+      }
+    },
+
+    sortIcon(field) {
+      if (this.sortField !== field) return "";
+      return this.reverse
+        ? "fa-solid fa-chevron-down"
+        : "fa-solid fa-chevron-up";
+    },
+
+    async openModal(id) {
+      this.currentId = id;
+      this.showModal = true;
+
+      if (id && id !== "(new)") {
+        const res = await fetch(`${this.baseUrl}/${id}`);
+        if (res.ok) {
+          this.table = await res.json();
+        }
+      } else {
+        this.table = {
+          id: "(new)",
+          name: "",
+          textField: "",
+          metadata: [],
+        };
+      }
+    },
+
+    closeModal() {
+      this.showModal = false;
+    },
+
+    async save() {
+      const url = `${this.baseUrl}/${this.table.id}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(this.table),
+      });
+
+      if (!res.ok) {
+        alert("Error saving table");
+        return;
+      }
+
+      this.showModal = false;
+      this.loadTables();
+    },
+
+    async remove() {
+      if (!this.currentId || this.currentId === "(new)") return;
+
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this table?"
+      );
+      if (!confirmed) return;
+
+      const res = await fetch(`${this.baseUrl}/${this.currentId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        alert("Error deleting table");
+        return;
+      }
+
+      this.showModal = false;
+      this.loadTables();
+    },
+
+    addMeta() {
+      this.table.metadata.push({
+        fieldName: "",
+        metadataName: "",
+        operators: "",
+        datatype: "STRING",
+        storeValues: false,
+      });
+    },
+
+    deleteMeta(index) {
+      this.table.metadata.splice(index, 1);
+    },
+  },
+};
 </script>
+
 
 <style>
 .table th {

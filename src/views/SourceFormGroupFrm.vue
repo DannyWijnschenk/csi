@@ -13,7 +13,7 @@
 
         <div class="ms-3 text-end" style="white-space: nowrap">
           <div>
-            Total count: <strong>{{ this.totalSizeCount.totalCount }}</strong>
+            Total count: <strong>{{ totalSizeCount.totalCount?.toLocaleString('uk-UA') }}</strong>
           </div>
           <div>
             Total size: <strong>{{ Number((this.totalSizeCount.totalSize / 1024).toFixed(2))}} Gb</strong>
@@ -71,7 +71,6 @@
               type="date"
               class="form-control form-control-sm me-2"
               v-model="usedSince"
-              @change="usedSinceChanged"
             />
             Used since
           </label>
@@ -106,7 +105,7 @@
           </div>
 
           <ul v-show="expanded[prefix]" class="ms-4">
-            <li v-for="sf in group" :key="sf.sourceForm">
+            <li v-for="sf in filterByDate(group)" :key="sf.sourceForm">
               <input
                 type="checkbox"
                 v-model="selectedFormsText"
@@ -162,6 +161,7 @@ export default {
     return {
       id: null,
       groupName: "",
+      usedSince: null,
       showTree: true,
       sourceForms: [],
       groupedForms: {},
@@ -195,18 +195,34 @@ export default {
     },
     filteredGroupedForms() {
       return Object.fromEntries(
-        Object.entries(this.groupedForms).filter(([prefix]) => {
+        Object.entries(this.groupedForms).filter(([prefix, group]) => {
           const existsInGroup = Object.keys(this.formsInGroup).some((k) =>
             k.startsWith(prefix)
           );
 
-          return !(existsInGroup && this.checkboxControl.usedInGroup);
+          if (existsInGroup && this.checkboxControl.usedInGroup) {
+            return false;
+          }
+
+          return this.filterByDate(group).length > 0;
         })
       );
     },
   },
 
   methods: {
+    filterByDate(list) {
+      if (!list) return [];
+
+      if (!this.usedSince) return list;
+
+      const sinceDate = new Date(this.usedSince + "T00:00:00");
+
+      return list.filter(sf => {
+        const lastUsedDate = new Date(sf.lastUsed);
+        return lastUsedDate >= sinceDate;
+      });
+    },
     checkboxChanged(event) {
       const isChecked = event.target.checked;
       const checkType = event.target.value;
@@ -219,6 +235,9 @@ export default {
 
       console.log("Selected:", this.checkboxControl);
     },
+    // usedSinceChanged(event) {
+
+    // },
     async getSourceForm() {
       const url = this.$store.getters.serverUrl+"/d2/sourceform";
       const res = await fetch(url, {
@@ -238,6 +257,7 @@ export default {
         acc[prefix].push(sf);
         return acc;
       }, {});
+      console.log(this.groupedForms)
     },
 
     async getSourceFormGroup(name) {
