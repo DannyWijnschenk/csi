@@ -79,7 +79,10 @@
 
       <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in filteredGroupedForms" :key="prefix">
-          <div class="d-flex align-items-center">
+          <div
+           class="d-flex align-items-center"
+           :class="{ 'bg-highlight': Object.keys(formsInGroup).some(k => k.startsWith(prefix)) }"
+           >
             <button class="btn btn-sm" @click="toggle(prefix)">
               {{ expanded[prefix] ? "[-]" : "[+]" }}
             </button>
@@ -149,6 +152,13 @@
             Back
           </button>
           &nbsp;
+          <button
+          type="button"
+          class="btn btn-outline-secondary"
+          @click="exportExcel"
+        >
+          Export to Exel
+        </button>
         </div>
       </div>
     </div>
@@ -156,6 +166,8 @@
 </template>
 
 <script>
+import * as XLSX from "xlsx";
+
 export default {
   data() {
     return {
@@ -222,6 +234,97 @@ export default {
         const lastUsedDate = new Date(sf.lastUsed);
         return lastUsedDate >= sinceDate;
       });
+    },
+    exportExcel() {
+      const payload = {
+        groupCode: this.groupName,
+        sourceForm: this.selectedFormsText,
+      };
+
+      const grouped = payload.sourceForm.reduce((acc, form) => {
+        const match = form.match(/^[A-Z]+/);
+        const prefix = match ? match[0] : "UNKNOWN";
+
+        if (!acc[prefix]) acc[prefix] = [];
+        acc[prefix].push(form);
+
+        return acc;
+      }, {});
+
+      const excelData = [
+        ["SourceFormGroupName", "SourceFromBlock", "SourceForm"],
+      ];
+
+      let startRow = 1;
+      const merges = [];
+      const borderBlocks = [];
+
+      Object.keys(grouped).forEach((prefix) => {
+        const forms = grouped[prefix];
+        const groupStart = startRow;
+
+        forms.forEach((form) => {
+          excelData.push(["", "", form]);
+          startRow++;
+        });
+
+        const groupEnd = startRow - 1;
+
+        merges.push({
+          s: { r: groupStart, c: 1 },
+          e: { r: groupEnd, c: 1 }
+        });
+
+        borderBlocks.push({ start: groupStart, end: groupEnd });
+
+        excelData[groupStart][1] = prefix;
+      });
+
+      const lastRow = startRow - 1;
+
+      merges.push({
+        s: { r: 1, c: 0 },
+        e: { r: lastRow, c: 0 }
+      });
+
+      excelData[1][0] = payload.groupCode;
+
+      const ws = XLSX.utils.aoa_to_sheet(excelData);
+      ws["!merges"] = merges;
+
+      const groupCodeCell = ws["A2"];
+      if (groupCodeCell) {
+        groupCodeCell.s = groupCodeCell.s || {};
+        groupCodeCell.s.alignment = { vertical: "top" };
+      }
+
+      borderBlocks.forEach(({ start, end }) => {
+        for (let r = start; r <= end; r++) {
+          let cellA = ws[XLSX.utils.encode_cell({ r, c: 0 })];
+          let cellB = ws[XLSX.utils.encode_cell({ r, c: 1 })];
+
+          if (!cellA.s) cellA.s = {};
+          if (!cellB.s) cellB.s = {};
+
+          const borderStyle = {
+            top: { style: "thin", color: { rgb: "000000" }},
+            bottom: { style: "thin", color: { rgb: "000000" }},
+            left: { style: "thin", color: { rgb: "000000" }},
+            right: { style: "thin", color: { rgb: "000000" }},
+          };
+
+          cellA.s.border = borderStyle;
+          cellB.s.border = borderStyle;
+
+          cellA.s.alignment = { vertical: "top" };
+          cellB.s.alignment = { vertical: "top" };
+        }
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Forms");
+
+      XLSX.writeFile(wb, "forms.xlsx");
     },
     checkboxChanged(event) {
       const isChecked = event.target.checked;
@@ -403,6 +506,8 @@ export default {
         sourceForm: this.selectedFormsText,
       };
 
+      console.log(payload)
+
       await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup", {
         method: "POST",
         headers: {
@@ -455,5 +560,9 @@ button.btn-sm {
 
 .delete-btn {
   justify-self: start;
+}
+
+.bg-highlight {
+  background-color: #fff3cd;
 }
 </style>
