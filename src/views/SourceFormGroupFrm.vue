@@ -3,47 +3,30 @@
     <div class="card p-4 mt-2">
       <h3>SourceFormGroup</h3>
       <div class="d-flex align-items-center justify-content-between mb-3 w-100">
-        <input
-          v-model="groupName"
-          type="text"
-          class="form-control"
-          placeholder="Enter group name"
-          style="max-width: 300px"
-        />
+        <input v-model="groupName" type="text" class="form-control" placeholder="Enter group name"
+          style="max-width: 300px" />
 
         <div class="ms-3 text-end" style="white-space: nowrap">
           <div>
             Total count: <strong>{{ totalSizeCount.totalCount?.toLocaleString('uk-UA') }}</strong>
           </div>
           <div>
-            Total size: <strong>{{ Number((this.totalSizeCount.totalSize / 1024).toFixed(2))}} Gb</strong>
+            Total size: <strong>{{ Number((this.totalSizeCount.totalSize / 1024).toFixed(2)) }} Gb</strong>
           </div>
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="col-sm-5">
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            @click="saveGroup"
-          >
+          <button type="button" class="btn btn-outline-primary" @click="saveGroup">
             Save Group
           </button>
           &nbsp;
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            @click="deleteGroup"
-          >
+          <button type="button" class="btn btn-outline-danger" @click="deleteGroup">
             Delete
           </button>
           &nbsp;
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            @click="goBack"
-          >
+          <button type="button" class="btn btn-outline-secondary" @click="goBack">
             Back
           </button>
           &nbsp;
@@ -57,21 +40,12 @@
 
         <div class="d-flex gap-3">
           <label class="d-flex align-items-center mb-0">
-            <input
-              type="checkbox"
-              class="me-2"
-              value="usedInGroup"
-              @change="checkboxChanged"
-            />
+            <input type="checkbox" class="me-2" value="usedInGroup" @change="checkboxChanged" />
             Not used in other groups
           </label>
 
           <label class="d-flex align-items-center mb-0 text-nowrap">
-            <input
-              type="date"
-              class="form-control form-control-sm me-2"
-              v-model="usedSince"
-            />
+            <input type="date" class="form-control form-control-sm me-2" v-model="usedSince" />
             Used since
           </label>
         </div>
@@ -79,28 +53,19 @@
 
       <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in filteredGroupedForms" :key="prefix">
-          <div
-           class="d-flex align-items-center"
-           :class="{ 'bg-highlight': Object.keys(formsInGroup).some(k => k.startsWith(prefix)) }"
-           >
+          <div class="d-flex align-items-center"
+            :class="{ 'bg-highlight': Object.keys(formsInGroup).some(k => k.startsWith(prefix)) }">
             <button class="btn btn-sm" @click="toggle(prefix)">
               {{ expanded[prefix] ? "[-]" : "[+]" }}
             </button>
 
-            <input
-              type="checkbox"
-              :checked="isGroupSelected(prefix)"
-              @change="toggleGroup(prefix)"
-            />
+            <input type="checkbox" :checked="isGroupSelected(prefix)" @change="toggleGroup(prefix)" />
 
             <b class="ms-2">
               {{ prefix }}
-              <span
-                v-if="
-                  Object.keys(formsInGroup).some((k) => k.startsWith(prefix))
-                "
-                >*</span
-              >
+              <span v-if="
+                Object.keys(formsInGroup).some((k) => k.startsWith(prefix))
+              ">*</span>
             </b>
             <span class="ms-2 text-secondary small">
               ({{ countSelected(prefix) }}/{{ filterByDate(group).length }})
@@ -109,12 +74,7 @@
 
           <ul v-show="expanded[prefix]" class="ms-4">
             <li v-for="sf in filterByDate(group)" :key="sf.sourceForm">
-              <input
-                type="checkbox"
-                v-model="selectedFormsText"
-                :value="sf.sourceForm"
-                @change="getSourceFormCount"
-              />
+              <input type="checkbox" v-model="selectedFormsText" :value="sf.sourceForm" @change="getSourceFormCount" />
               {{ sf.sourceForm }}
 
               <span v-if="formsInGroup[sf.sourceForm]">
@@ -128,37 +88,21 @@
 
       <div class="row mb-2">
         <div class="col-sm-5">
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            @click="saveGroup"
-          >
+          <button type="button" class="btn btn-outline-primary" @click="saveGroup">
             Save Group
           </button>
           &nbsp;
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            @click="deleteGroup"
-          >
+          <button type="button" class="btn btn-outline-danger" @click="deleteGroup">
             Delete
           </button>
           &nbsp;
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            @click="goBack"
-          >
+          <button type="button" class="btn btn-outline-secondary" @click="goBack">
             Back
           </button>
           &nbsp;
-          <button
-          type="button"
-          class="btn btn-outline-secondary"
-          @click="exportExcel"
-        >
-          Export to Exel
-        </button>
+          <button type="button" class="btn btn-outline-secondary" @click="exportExcel">
+            Export to Exel
+          </button>
         </div>
       </div>
     </div>
@@ -252,7 +196,7 @@ export default {
       }, {});
 
       const excelData = [
-        ["SourceFormGroupName", "SourceFromBlock", "SourceForm"],
+        ["SourceFormGroupName", "SourceFromBlock", "SourceForm", "TotalSize", "TotalCount"],
       ];
 
       let startRow = 1;
@@ -264,7 +208,7 @@ export default {
         const groupStart = startRow;
 
         forms.forEach((form) => {
-          excelData.push(["", "", form]);
+          excelData.push(["", "", form, "", ""]);
           startRow++;
         });
 
@@ -289,6 +233,22 @@ export default {
 
       excelData[1][0] = payload.groupCode;
 
+      merges.push({
+        s: { r: 1, c: 3 },
+        e: { r: lastRow, c: 3 }
+      });
+
+      merges.push({
+        s: { r: 1, c: 4 },
+        e: { r: lastRow, c: 4 }
+      });
+
+      const totalSize = Number((this.totalSizeCount.totalSize / 1024).toFixed(2)) + " Gb";
+      const totalCount = this.totalSizeCount.totalCount?.toLocaleString("uk-UA");
+
+      excelData[1][3] = totalSize;
+      excelData[1][4] = totalCount;
+
       const ws = XLSX.utils.aoa_to_sheet(excelData);
       ws["!merges"] = merges;
 
@@ -300,26 +260,25 @@ export default {
 
       borderBlocks.forEach(({ start, end }) => {
         for (let r = start; r <= end; r++) {
-          let cellA = ws[XLSX.utils.encode_cell({ r, c: 0 })];
-          let cellB = ws[XLSX.utils.encode_cell({ r, c: 1 })];
 
-          if (!cellA.s) cellA.s = {};
-          if (!cellB.s) cellB.s = {};
+          for (let c = 0; c <= 4; c++) {
+            let cell = ws[XLSX.utils.encode_cell({ r, c })];
+            if (!cell) continue;
+            if (!cell.s) cell.s = {};
 
-          const borderStyle = {
-            top: { style: "thin", color: { rgb: "000000" }},
-            bottom: { style: "thin", color: { rgb: "000000" }},
-            left: { style: "thin", color: { rgb: "000000" }},
-            right: { style: "thin", color: { rgb: "000000" }},
-          };
+            const borderStyle = {
+              top: { style: "thin", color: { rgb: "000000" } },
+              bottom: { style: "thin", color: { rgb: "000000" } },
+              left: { style: "thin", color: { rgb: "000000" } },
+              right: { style: "thin", color: { rgb: "000000" } },
+            };
 
-          cellA.s.border = borderStyle;
-          cellB.s.border = borderStyle;
-
-          cellA.s.alignment = { vertical: "top" };
-          cellB.s.alignment = { vertical: "top" };
+            cell.s.border = borderStyle;
+            cell.s.alignment = { vertical: "top" };
+          }
         }
       });
+
 
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Forms");
@@ -339,7 +298,7 @@ export default {
       console.log("Selected:", this.checkboxControl);
     },
     async getSourceForm() {
-      const url = this.$store.getters.serverUrl+"/d2/sourceform";
+      const url = this.$store.getters.serverUrl + "/d2/sourceform";
       const res = await fetch(url, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -361,7 +320,7 @@ export default {
     },
 
     async getSourceFormGroup(name) {
-      const res = await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup/" + name, {
+      const res = await fetch(this.$store.getters.serverUrl + "/d2/sourceformgroup/" + name, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
@@ -375,7 +334,7 @@ export default {
     },
 
     async getSourceFormInGroup(name) {
-      const res = await fetch(this.$store.getters.serverUrl+"/d2/sourceform/ingroups/" + name, {
+      const res = await fetch(this.$store.getters.serverUrl + "/d2/sourceform/ingroups/" + name, {
         headers: {
           Authorization: "Bearer " + this.$store.getters.serverAccessToken,
         },
@@ -441,7 +400,7 @@ export default {
       });
 
       if (ok) {
-        const delRes = await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup/" + this.id, {
+        const delRes = await fetch(this.$store.getters.serverUrl + "/d2/sourceformgroup/" + this.id, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -463,7 +422,7 @@ export default {
         sourceForms: this.selectedFormsText,
       };
 
-      const res = await fetch(this.$store.getters.serverUrl+"/d2/sourceform/sizecount", {
+      const res = await fetch(this.$store.getters.serverUrl + "/d2/sourceform/sizecount", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -488,7 +447,7 @@ export default {
       }
 
       if (this.id !== "new") {
-        const delRes = await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup/" + this.id, {
+        const delRes = await fetch(this.$store.getters.serverUrl + "/d2/sourceformgroup/" + this.id, {
           method: "DELETE",
           headers: {
             Authorization: "Bearer " + this.$store.getters.serverAccessToken,
@@ -508,7 +467,7 @@ export default {
 
       console.log(payload)
 
-      await fetch(this.$store.getters.serverUrl+"/d2/sourceformgroup", {
+      await fetch(this.$store.getters.serverUrl + "/d2/sourceformgroup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -528,9 +487,11 @@ export default {
   list-style: none;
   padding-left: 1em;
 }
+
 .tree-container li {
   margin-bottom: 4px;
 }
+
 button.btn-sm {
   padding: 2px 6px;
 }
@@ -542,7 +503,7 @@ button.btn-sm {
   padding-left: 0;
 }
 
-.outer-grid > li {
+.outer-grid>li {
   list-style: none;
 }
 
