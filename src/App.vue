@@ -107,6 +107,16 @@ export default {
               href: '/parameter'
             },
             {
+              title: 'Task Queue',
+              icon: faIcon({ icon: 'fa-solid fa-tasks' }),
+              href: '/taskqueue'
+            },
+            {
+              title: 'Audit Log',
+              icon: faIcon({ icon: 'fa-solid fa-clipboard-list' }),
+              href: '/audit'
+            },
+            {
               title: 'Menu',
               icon: faIcon({ icon: 'fa-solid fa-list' }),
               href: '/menu'

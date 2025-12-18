@@ -25,6 +25,8 @@ import TablesGrid from '../views/TablesGrid.vue'
 import DomainTiming from '../views/DomainTiming.vue'
 import SourceFormGroupGrid from '../views/SourceFormGroupGrid.vue'
 import SourceFormGroupFrm from '../views/SourceFormGroupFrm.vue'
+import AuditList from '../views/AuditList.vue'
+import TaskQueue from '../views/TaskQueue.vue'
 
 
 const routes = [
@@ -56,6 +58,8 @@ const routes = [
   { path: '/domaintiming', name: 'DomainTiming', component: DomainTiming },
   { path: '/sourceformgroup', name: 'SourceFormGroupGrid', component: SourceFormGroupGrid },
   { path: '/sourceformgroup/:id', name: 'SourceFormGroupFrm', component: SourceFormGroupFrm },
+  { path: '/audit', name: 'AuditList', component: AuditList },
+  { path: '/taskqueue', name: 'TaskQueue', component: TaskQueue },
 
 ]
 
