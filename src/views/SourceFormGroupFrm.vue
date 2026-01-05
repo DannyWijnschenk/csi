@@ -54,7 +54,7 @@
       <ul class="ms-4 outer-grid">
         <li v-for="(group, prefix) in filteredGroupedForms" :key="prefix">
           <div class="d-flex align-items-center"
-            :class="{ 'bg-highlight': Object.keys(formsInGroup).some(k => k.startsWith(prefix)) }">
+            :class="{ 'bg-highlight': countSelected(prefix)}">
             <button class="btn btn-sm" @click="toggle(prefix)">
               {{ expanded[prefix] ? "[-]" : "[+]" }}
             </button>
